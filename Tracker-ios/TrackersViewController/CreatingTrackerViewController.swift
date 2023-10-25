@@ -72,14 +72,14 @@ final class CreatingTrackerViewController: UIViewController {
     
     @objc
     private func didTapHabitButton() {
-        let navigatonViewController = UINavigationController(rootViewController: NewHabitViewController())
-        present(navigatonViewController, animated: true)
+        let newHabitViewController = UINavigationController(rootViewController: NewHabitViewController(buttonType: .habit))
+        present(newHabitViewController, animated: true)
     }
     
     @objc
     private func didTapEventButton() {
-//        let navigatonViewController = UINavigationController(rootViewController: CreatingTrackerViewController())
-//        present(navigatonViewController, animated: true)
+        let newHabitViewController = UINavigationController(rootViewController: NewHabitViewController(buttonType: .event))
+        present(newHabitViewController, animated: true)
     }
     
     // MARK: - Private Methods

@@ -9,6 +9,7 @@ import UIKit
 
 final class CategoryViewController: UIViewController {
     
+    weak var delegate: CategoryViewControllerDelegate?
     private var dataManager = DataManager.shared
     
     //MARK: - Layout variables
@@ -171,12 +172,12 @@ extension CategoryViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate
 extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        guard let delegate = delegate else {
-//            tableView.deselectRow(at: indexPath, animated: false)
-//            return
-//        }
-//        delegate.updateCategory(category: mockData.getCategories()[indexPath.row])
+        guard let delegate = delegate else {
+            return
+        }
+        let category = dataManager.categories[indexPath.row].title
+        delegate.updateCategory(category: category)
         tableView.deselectRow(at: indexPath, animated: false)
-//        dismiss(animated: true)
+        dismiss(animated: true)
     }
 }

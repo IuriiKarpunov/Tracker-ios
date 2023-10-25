@@ -24,7 +24,7 @@ class DataManager {
                     id: UUID(),
                     name: "Погладить",
                     color: .ypRed,
-                    emoji: "🍾",
+                    emoji: "😻",
                     schedule: [WeekDay.thursday, WeekDay.friday]
                 )
             ]
@@ -36,7 +36,7 @@ class DataManager {
                     id: UUID(),
                     name: "Сделать ДЗ",
                     color: .ypBlue,
-                    emoji: "🍾",
+                    emoji: "🌺",
                     schedule: [WeekDay.monday, WeekDay.sunday]
                 )
             ]

@@ -67,7 +67,8 @@ final class ScheduleViewController: UIViewController {
     
     @objc
     private func didTapAddScheduleButton() {
-        delegate?.createSchedule(schedule: schedule)
+        guard let delegate = delegate else { return }
+        delegate.createSchedule(schedule: schedule)
         dismiss(animated: true)
     }
     
@@ -133,6 +134,9 @@ extension ScheduleViewController: UITableViewDataSource {
         guard let scheduleCell = cell as? ScheduleCell else {
             return UITableViewCell()
         }
+        
+        scheduleCell.delegate = self
+        
         scheduleCell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         if indexPath.row == WeekDay.allCases.count - 1 {
             scheduleCell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)

@@ -13,15 +13,29 @@ final class NewHabitViewController: UIViewController {
     private var category: TrackerCategory?
     private var schedule = [WeekDay]()
     
+    enum ButtonType {
+        case habit
+        case event
+    }
+    
+    var buttonType: ButtonType
+    
+    init(buttonType: ButtonType) {
+        self.buttonType = buttonType
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     //MARK: - Layout variables
     
     private let newHabitTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Новая привычка"
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.accessibilityIdentifier = "newHabitTitleLabel"
         
         return label
     }()
@@ -41,7 +55,7 @@ final class NewHabitViewController: UIViewController {
         textField.layer.cornerRadius = 16
         textField.borderStyle = .roundedRect
         textField.delegate = self
-
+        
         return textField
     }()
     
@@ -69,7 +83,6 @@ final class NewHabitViewController: UIViewController {
         button.contentHorizontalAlignment = .left
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 16
-        button.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         button.backgroundColor = .ypBackgroundDay
         button.addTarget(
             self,
@@ -183,6 +196,7 @@ final class NewHabitViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .ypWhiteDay
         addSubViews()
+        creatHabitOrEvent()
         applyConstraints()
     }
     
@@ -190,14 +204,16 @@ final class NewHabitViewController: UIViewController {
     
     @objc
     private func didTapCategoryButton() {
-        let navigatonViewController = UINavigationController(rootViewController: CategoryViewController())
-        present(navigatonViewController, animated: true)
+        let categoryViewController = CategoryViewController()
+        categoryViewController.delegate = self
+        present(categoryViewController, animated: true)
     }
     
     @objc
     private func didTapScheduleButton() {
-        let navigatonViewController = UINavigationController(rootViewController: ScheduleViewController())
-        present(navigatonViewController, animated: true)
+        let scheduleViewController = ScheduleViewController()
+        scheduleViewController.delegate = self
+        present(scheduleViewController, animated: true)
     }
     
     @objc
@@ -216,14 +232,29 @@ final class NewHabitViewController: UIViewController {
         view.addSubview(textField)
         view.addSubview(errorTitleLabel)
         view.addSubview(categoryImageView)
-        view.addSubview(scheduleImageView)
         view.addSubview(categoryButton)
         view.addSubview(headerCategoryLabel)
-        view.addSubview(scheduleButton)
-        view.addSubview(headerScheduleLabel)
         view.addSubview(cancelButton)
         view.addSubview(createButton)
-        view.addSubview(delimiterView)
+        
+        if buttonType == .habit {
+            view.addSubview(scheduleImageView)
+            view.addSubview(scheduleButton)
+            view.addSubview(headerScheduleLabel)
+            view.addSubview(delimiterView)
+        }
+    }
+    
+    private func creatHabitOrEvent() {
+        switch buttonType {
+        case .habit:
+            newHabitTitleLabel.text = "Новая привычка"
+            categoryButton.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            break
+        case .event:
+            newHabitTitleLabel.text = "Новое нерегулярное событие"
+            break
+        }
     }
     
     private func headerCategoryUpdate() {
@@ -253,37 +284,51 @@ final class NewHabitViewController: UIViewController {
     }
     
     private func applyConstraints() {
-        NSLayoutConstraint.activate([
-            newHabitTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            newHabitTitleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 21),
-            
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            scrollView.topAnchor.constraint(equalTo: newHabitTitleLabel.bottomAnchor, constant: 38),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            scrollView.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: 16),
-            
-            textField.heightAnchor.constraint(equalToConstant: 75),
-            textField.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            textField.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            textField.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            
-            errorTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            errorTitleLabel.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 8),
-            
-            categoryButton.heightAnchor.constraint(equalToConstant: 75),
-            categoryButton.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            categoryButton.topAnchor.constraint(equalTo: errorTitleLabel.bottomAnchor, constant: 24),
-            categoryButton.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            
-            categoryImageView.heightAnchor.constraint(equalToConstant: 24),
-            categoryImageView.widthAnchor.constraint(equalToConstant: 24),
-            categoryImageView.centerYAnchor.constraint(equalTo: categoryButton.centerYAnchor),
-            categoryImageView.trailingAnchor.constraint(equalTo: categoryButton.trailingAnchor, constant: -16),
-            
+            NSLayoutConstraint.activate([
+                newHabitTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                newHabitTitleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 21),
+                
+                scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+                scrollView.topAnchor.constraint(equalTo: newHabitTitleLabel.bottomAnchor, constant: 38),
+                scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+                scrollView.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: 16),
+                
+                textField.heightAnchor.constraint(equalToConstant: 75),
+                textField.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+                textField.topAnchor.constraint(equalTo: scrollView.topAnchor),
+                textField.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+                
+                errorTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                errorTitleLabel.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 8),
+                
+                categoryButton.heightAnchor.constraint(equalToConstant: 75),
+                categoryButton.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+                categoryButton.topAnchor.constraint(equalTo: errorTitleLabel.bottomAnchor, constant: 24),
+                categoryButton.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+                
+                categoryImageView.heightAnchor.constraint(equalToConstant: 24),
+                categoryImageView.widthAnchor.constraint(equalToConstant: 24),
+                categoryImageView.centerYAnchor.constraint(equalTo: categoryButton.centerYAnchor),
+                categoryImageView.trailingAnchor.constraint(equalTo: categoryButton.trailingAnchor, constant: -16),
+                
+                cancelButton.heightAnchor.constraint(equalToConstant: 60),
+                cancelButton.widthAnchor.constraint(equalToConstant: 166),
+                cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+                createButton.heightAnchor.constraint(equalToConstant: 60),
+                cancelButton.trailingAnchor.constraint(equalTo: createButton.leadingAnchor, constant: -8),
+                cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+                
+                createButton.widthAnchor.constraint(equalToConstant: 166),
+                createButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+                createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            ])
+        
+        if buttonType == .habit {
+            NSLayoutConstraint.activate([
             scheduleButton.heightAnchor.constraint(equalToConstant: 75),
-            scheduleButton.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            scheduleButton.leadingAnchor.constraint(equalTo: categoryButton.leadingAnchor),
             scheduleButton.topAnchor.constraint(equalTo: categoryButton.bottomAnchor),
-            scheduleButton.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            scheduleButton.trailingAnchor.constraint(equalTo: categoryButton.trailingAnchor),
             
             delimiterView.centerXAnchor.constraint(equalTo: scheduleButton.centerXAnchor),
             delimiterView.leadingAnchor.constraint(equalTo: scheduleButton.leadingAnchor, constant: 16),
@@ -294,51 +339,60 @@ final class NewHabitViewController: UIViewController {
             scheduleImageView.heightAnchor.constraint(equalToConstant: 24),
             scheduleImageView.widthAnchor.constraint(equalToConstant: 24),
             scheduleImageView.centerYAnchor.constraint(equalTo: scheduleButton.centerYAnchor),
-            scheduleImageView.trailingAnchor.constraint(equalTo: scheduleButton.trailingAnchor, constant: -16),
-            
-            cancelButton.heightAnchor.constraint(equalToConstant: 60),
-            cancelButton.widthAnchor.constraint(equalToConstant: 166),
-            cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            createButton.heightAnchor.constraint(equalToConstant: 60),
-            cancelButton.trailingAnchor.constraint(equalTo: createButton.leadingAnchor, constant: -8),
-            cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            
-            createButton.widthAnchor.constraint(equalToConstant: 166),
-            createButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        ])
+            scheduleImageView.trailingAnchor.constraint(equalTo: scheduleButton.trailingAnchor, constant: -16)
+            ])
+        }
+    }
+    
+    private func addButton() {
+        let isHabitButton = buttonType == .habit
+        let isValidSchedule = isHabitButton ? (headerScheduleLabel.text != "") : true
+        let isValidText = textField.text != ""
+        let isValidCategory = headerCategoryLabel.text != ""
+        
+        createButton.isEnabled = isValidSchedule && isValidText && isValidCategory
+        createButton.backgroundColor = createButton.isEnabled ? .ypBlackDay : .ypGrey
     }
 }
 
+
+
 extension NewHabitViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            if textField == self.textField {
-                let currentText = textField.text ?? ""
-                let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
-                
-                if updatedText.count > 38 {
-                    errorTitleLabel.text = "Ограничение 38 символов"
-                    return false
-                } else {
-                    errorTitleLabel.text = ""
-                    return true
-                }
+        if textField == self.textField {
+            let currentText = textField.text ?? ""
+            let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
+            
+            if updatedText.count > 38 {
+                errorTitleLabel.text = "Ограничение 38 символов"
+                return false
+            } else {
+                errorTitleLabel.text = ""
+                return true
             }
-            return true
         }
+        return true
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let text = textField.text,
-           text.count > 0 {
-            createButton.isEnabled = true
-            createButton.backgroundColor = UIColor.ypBlackDay
-        } else {
-            createButton.isEnabled = false
-            createButton.backgroundColor = UIColor.ypGrey
-        }
+        addButton()
         textField.resignFirstResponder()
         return true
     }
 }
 
+extension NewHabitViewController: ScheduleViewControllerDelegate {
+    func createSchedule(schedule: [WeekDay]) {
+        headerScheduleLabel.text = schedule.map { $0.shortName }.joined(separator: ", ")
+        headerScheduleUpdate()
+        addButton()
+    }
+}
 
+extension NewHabitViewController: CategoryViewControllerDelegate {
+    func updateCategory(category: String) {
+        headerCategoryLabel.text = category
+        headerCategoryUpdate()
+        addButton()
+    }
+}

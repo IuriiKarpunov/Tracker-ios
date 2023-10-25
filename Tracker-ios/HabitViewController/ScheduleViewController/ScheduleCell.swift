@@ -13,7 +13,7 @@ final class ScheduleCell: UITableViewCell {
     // MARK: - Stored properties
     
     weak var delegate: ScheduleCellDelegate?
-    var weekDay: WeekDay?
+    private var currentWeekDay: WeekDay?
     static let reuseIdentifier = "ScheduleCell"
     
     //MARK: - Layout variables
@@ -40,6 +40,7 @@ final class ScheduleCell: UITableViewCell {
     // MARK: - Lifecycle
     
     func configureCell(weekDay: WeekDay) {
+        currentWeekDay = weekDay
         cellLabel.text = weekDay.rawValue
         contentView.backgroundColor = .ypBackgroundDay
         addSubViews()
@@ -67,7 +68,7 @@ final class ScheduleCell: UITableViewCell {
     // MARK: - IBAction
     
     @objc func switchChanged(sender: UISwitch) {
-        guard let weekDay,
+        guard let weekDay = currentWeekDay,
               let delegate else { return }
         delegate.switchStateChanged(weekDay: weekDay, isOn: sender.isOn)
     }
