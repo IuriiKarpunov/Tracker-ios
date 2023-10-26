@@ -10,6 +10,8 @@ import UIKit
 
 final class CreatingTrackerViewController: UIViewController {
     
+    weak var delegate: CreatingTrackerViewControllerDelegate?
+    
     //MARK: - Layout variables
     
     private let creatingTitleLabel: UILabel = {
@@ -72,14 +74,16 @@ final class CreatingTrackerViewController: UIViewController {
     
     @objc
     private func didTapHabitButton() {
-        let newHabitViewController = UINavigationController(rootViewController: NewHabitViewController(buttonType: .habit))
-        present(newHabitViewController, animated: true)
+        let newHabitOrEventViewController = NewHabitOrEventViewController(habitOrEvent: .habit)
+        newHabitOrEventViewController.delegate = self
+        present(newHabitOrEventViewController, animated: true)
     }
     
     @objc
     private func didTapEventButton() {
-        let newHabitViewController = UINavigationController(rootViewController: NewHabitViewController(buttonType: .event))
-        present(newHabitViewController, animated: true)
+        let newHabitOrEventViewController = NewHabitOrEventViewController(habitOrEvent: .event)
+        newHabitOrEventViewController.delegate = self
+        present(newHabitOrEventViewController, animated: true)
     }
     
     // MARK: - Private Methods
@@ -106,4 +110,13 @@ final class CreatingTrackerViewController: UIViewController {
             eventButton.topAnchor.constraint(equalTo: habitButton.bottomAnchor, constant: 16)
         ])
     }
+}
+
+// MARK: - IBAction NewHabitOrEventViewControllerDelegate
+
+extension CreatingTrackerViewController: NewHabitOrEventViewControllerDelegate {
+    func createTrackers(nameCategory: String, schedule: [WeekDay], nameTracker: String, color: UIColor, emoji: String) {
+        delegate?.createTrackers(nameCategory: nameCategory, schedule: schedule, nameTracker: nameTracker, color: color, emoji: emoji)
+    }
+    
 }

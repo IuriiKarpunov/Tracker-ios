@@ -130,8 +130,11 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func didTapPlusButton() {
-        let navigatonViewController = UINavigationController(rootViewController: CreatingTrackerViewController())
-        present(navigatonViewController, animated: true)
+        let creatingTrackerViewController = CreatingTrackerViewController()
+        creatingTrackerViewController.delegate = self
+        
+//        let navigatonViewController = UINavigationController(rootViewController: CreatingTrackerViewController())
+        present(creatingTrackerViewController, animated: true)
     }
     
     @objc
@@ -150,9 +153,12 @@ final class TrackersViewController: UIViewController {
         view.addSubview(titleLabel)
         view.addSubview(datePicker)
         view.addSubview(searchTextField)
-        view.addSubview(collectionView)
-//        view.addSubview(placeholderImageView)
-//        view.addSubview(placeholderTitleLabel)
+        if categories.count != 0 {
+            view.addSubview(collectionView)
+        } else {
+            view.addSubview(placeholderImageView)
+            view.addSubview(placeholderTitleLabel)
+        }
     }
     
     private func applyConstraints() {
@@ -179,10 +185,10 @@ final class TrackersViewController: UIViewController {
             searchTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 7),
             searchTextField.trailingAnchor.constraint(equalTo: datePicker.trailingAnchor),
             
-            collectionView.leadingAnchor.constraint(equalTo: searchTextField.leadingAnchor),
-            collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
-            collectionView.trailingAnchor.constraint(equalTo: searchTextField.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+//            collectionView.leadingAnchor.constraint(equalTo: searchTextField.leadingAnchor),
+//            collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
+//            collectionView.trailingAnchor.constraint(equalTo: searchTextField.trailingAnchor),
+//            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
 //            placeholderImageView.heightAnchor.constraint(equalToConstant: 80),
 //            placeholderImageView.widthAnchor.constraint(equalToConstant: 80),
@@ -192,6 +198,25 @@ final class TrackersViewController: UIViewController {
 //            placeholderTitleLabel.topAnchor.constraint(equalTo: placeholderImageView.bottomAnchor, constant: 8),
 //            placeholderTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
+        
+        if categories.count != 0 {
+            NSLayoutConstraint.activate([
+                collectionView.leadingAnchor.constraint(equalTo: searchTextField.leadingAnchor),
+                collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
+                collectionView.trailingAnchor.constraint(equalTo: searchTextField.trailingAnchor),
+                collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                placeholderImageView.heightAnchor.constraint(equalToConstant: 80),
+                placeholderImageView.widthAnchor.constraint(equalToConstant: 80),
+                placeholderImageView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 230),
+                placeholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                
+                placeholderTitleLabel.topAnchor.constraint(equalTo: placeholderImageView.bottomAnchor, constant: 8),
+                placeholderTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            ])
+        }
     }
 
 }
@@ -272,4 +297,28 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 
 extension TrackersViewController: UITextFieldDelegate {
     // Реализация методов UITextFieldDelegate, если необходимо
+}
+
+// MARK: - CreatingTrackerViewControllerDelegate
+
+extension TrackersViewController: CreatingTrackerViewControllerDelegate {
+    func createTrackers(nameCategory: String, schedule: [WeekDay], nameTracker: String, color: UIColor, emoji: String) {
+        var updatedCategories = categories
+        
+        
+        if let existingCategoryIndex = updatedCategories.firstIndex(where: { $0.title == nameCategory }) {
+                let newTracker = Tracker(id: UUID(), name: nameTracker, color: color, emoji: emoji, schedule: schedule)
+                let updatedTrackers = updatedCategories[existingCategoryIndex].trackers + [newTracker]
+                let updatedCategory = TrackerCategory(title: nameCategory, trackers: updatedTrackers)
+                updatedCategories[existingCategoryIndex] = updatedCategory
+        } else {
+            let newTracker = Tracker(id: UUID(), name: nameTracker, color: color, emoji: emoji, schedule: schedule)
+            let newCategory = TrackerCategory(title: nameCategory, trackers: [newTracker])
+            updatedCategories.append(newCategory)
+        }
+        DataManager.shared.updateTrackerCategory(updatedCategories: updatedCategories)
+        
+        collectionView.reloadData()
+//        return updatedCategories
+    }
 }

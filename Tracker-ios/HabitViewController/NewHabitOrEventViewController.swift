@@ -8,20 +8,21 @@
 
 import UIKit
 
-final class NewHabitViewController: UIViewController {
+final class NewHabitOrEventViewController: UIViewController {
     
     private var category: TrackerCategory?
     private var schedule = [WeekDay]()
+    weak var delegate: NewHabitOrEventViewControllerDelegate?
     
-    enum ButtonType {
+    enum HabitOrEvent {
         case habit
         case event
     }
     
-    var buttonType: ButtonType
+    var habitOrEvent: HabitOrEvent
     
-    init(buttonType: ButtonType) {
-        self.buttonType = buttonType
+    init(habitOrEvent: HabitOrEvent) {
+        self.habitOrEvent = habitOrEvent
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -222,7 +223,21 @@ final class NewHabitViewController: UIViewController {
     }
     
     @objc
-    private func didTapCreateButton() { }
+    private func didTapCreateButton() {
+        delegate?.createTrackers(
+            nameCategory: headerCategoryLabel.text ?? "Новая категория",
+            schedule: schedule,
+            nameTracker: textField.text ?? "Без названия",
+            color: .brown,
+            emoji: "🫠"
+        )
+        
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid Configuration")
+            return
+        }
+        window.rootViewController = TrackersViewController()
+    }
     
     // MARK: - Private Methods
     
@@ -237,7 +252,7 @@ final class NewHabitViewController: UIViewController {
         view.addSubview(cancelButton)
         view.addSubview(createButton)
         
-        if buttonType == .habit {
+        if habitOrEvent == .habit {
             view.addSubview(scheduleImageView)
             view.addSubview(scheduleButton)
             view.addSubview(headerScheduleLabel)
@@ -246,7 +261,7 @@ final class NewHabitViewController: UIViewController {
     }
     
     private func creatHabitOrEvent() {
-        switch buttonType {
+        switch habitOrEvent {
         case .habit:
             newHabitTitleLabel.text = "Новая привычка"
             categoryButton.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -323,7 +338,7 @@ final class NewHabitViewController: UIViewController {
                 createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
             ])
         
-        if buttonType == .habit {
+        if habitOrEvent == .habit {
             NSLayoutConstraint.activate([
             scheduleButton.heightAnchor.constraint(equalToConstant: 75),
             scheduleButton.leadingAnchor.constraint(equalTo: categoryButton.leadingAnchor),
@@ -345,7 +360,7 @@ final class NewHabitViewController: UIViewController {
     }
     
     private func addButton() {
-        let isHabitButton = buttonType == .habit
+        let isHabitButton = habitOrEvent == .habit
         let isValidSchedule = isHabitButton ? (headerScheduleLabel.text != "") : true
         let isValidText = textField.text != ""
         let isValidCategory = headerCategoryLabel.text != ""
@@ -357,7 +372,7 @@ final class NewHabitViewController: UIViewController {
 
 
 
-extension NewHabitViewController: UITextFieldDelegate {
+extension NewHabitOrEventViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if textField == self.textField {
             let currentText = textField.text ?? ""
@@ -381,15 +396,16 @@ extension NewHabitViewController: UITextFieldDelegate {
     }
 }
 
-extension NewHabitViewController: ScheduleViewControllerDelegate {
+extension NewHabitOrEventViewController: ScheduleViewControllerDelegate {
     func createSchedule(schedule: [WeekDay]) {
+        self.schedule = schedule
         headerScheduleLabel.text = schedule.map { $0.shortName }.joined(separator: ", ")
         headerScheduleUpdate()
         addButton()
     }
 }
 
-extension NewHabitViewController: CategoryViewControllerDelegate {
+extension NewHabitOrEventViewController: CategoryViewControllerDelegate {
     func updateCategory(category: String) {
         headerCategoryLabel.text = category
         headerCategoryUpdate()

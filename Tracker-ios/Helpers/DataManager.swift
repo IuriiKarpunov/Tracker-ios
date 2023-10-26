@@ -42,4 +42,8 @@ class DataManager {
             ]
         )
     ]
+    
+    func updateTrackerCategory(updatedCategories: [TrackerCategory]) {
+        self.categories = updatedCategories
+    }
 }
