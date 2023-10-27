@@ -370,7 +370,7 @@ final class NewHabitOrEventViewController: UIViewController {
     }
 }
 
-
+//MARK: - UITextFieldDelegate
 
 extension NewHabitOrEventViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -396,6 +396,8 @@ extension NewHabitOrEventViewController: UITextFieldDelegate {
     }
 }
 
+//MARK: - ScheduleViewControllerDelegate
+
 extension NewHabitOrEventViewController: ScheduleViewControllerDelegate {
     func createSchedule(schedule: [WeekDay]) {
         self.schedule = schedule
@@ -404,6 +406,8 @@ extension NewHabitOrEventViewController: ScheduleViewControllerDelegate {
         addButton()
     }
 }
+
+//MARK: - CategoryViewControllerDelegate
 
 extension NewHabitOrEventViewController: CategoryViewControllerDelegate {
     func updateCategory(category: String) {

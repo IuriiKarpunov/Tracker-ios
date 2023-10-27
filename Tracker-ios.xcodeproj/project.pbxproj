@@ -21,6 +21,7 @@
 		4A05DCC02AE996770051E166 /* TrackerHeaderCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A05DCBF2AE996770051E166 /* TrackerHeaderCollectionViewCell.swift */; };
 		4A05DCC22AEA72940051E166 /* NewHabitOrEventViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A05DCC12AEA72940051E166 /* NewHabitOrEventViewControllerDelegate.swift */; };
 		4A05DCC42AEAA0F00051E166 /* CreatingTrackerViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A05DCC32AEAA0F00051E166 /* CreatingTrackerViewControllerDelegate.swift */; };
+		4A05DCC62AEBC54C0051E166 /* TreckersCollectionViewCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A05DCC52AEBC54C0051E166 /* TreckersCollectionViewCellDelegate.swift */; };
 		4AA083342AD4589000D8D18D /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA083332AD4589000D8D18D /* StatisticsViewController.swift */; };
 		4AA083362AD458C300D8D18D /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA083352AD458C300D8D18D /* TabBarController.swift */; };
 		4AA083392AD6EAE700D8D18D /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA083382AD6EAE700D8D18D /* Tracker.swift */; };
@@ -50,6 +51,7 @@
 		4A05DCBF2AE996770051E166 /* TrackerHeaderCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerHeaderCollectionViewCell.swift; sourceTree = "<group>"; };
 		4A05DCC12AEA72940051E166 /* NewHabitOrEventViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitOrEventViewControllerDelegate.swift; sourceTree = "<group>"; };
 		4A05DCC32AEAA0F00051E166 /* CreatingTrackerViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatingTrackerViewControllerDelegate.swift; sourceTree = "<group>"; };
+		4A05DCC52AEBC54C0051E166 /* TreckersCollectionViewCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreckersCollectionViewCellDelegate.swift; sourceTree = "<group>"; };
 		4AA083332AD4589000D8D18D /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
 		4AA083352AD458C300D8D18D /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		4AA083382AD6EAE700D8D18D /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				4AC281D82AC967FA00D232B4 /* TrackersViewController.swift */,
 				4A05DCBD2AE6DF2E0051E166 /* TreckersCollectionViewCell.swift */,
 				4A05DCBF2AE996770051E166 /* TrackerHeaderCollectionViewCell.swift */,
+				4A05DCC52AEBC54C0051E166 /* TreckersCollectionViewCellDelegate.swift */,
 			);
 			path = TrackersViewController;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				4A05DCC22AEA72940051E166 /* NewHabitOrEventViewControllerDelegate.swift in Sources */,
 				4A05DCB22ADD97590051E166 /* ScheduleCell.swift in Sources */,
 				4A05DCC02AE996770051E166 /* TrackerHeaderCollectionViewCell.swift in Sources */,
+				4A05DCC62AEBC54C0051E166 /* TreckersCollectionViewCellDelegate.swift in Sources */,
 				4AC281D92AC967FA00D232B4 /* TrackersViewController.swift in Sources */,
 				4A05DCB02ADD895D0051E166 /* ScheduleViewController.swift in Sources */,
 				4A05DCB82AE3F42D0051E166 /* ScheduleCellDelegate.swift in Sources */,

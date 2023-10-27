@@ -12,7 +12,7 @@ final class TrackersViewController: UIViewController {
     // MARK: - Subview Properties
     
     var categories: [TrackerCategory] = DataManager.shared.categories
-    var completedTrackers: [TrackerRecord] = []
+    var completedTrackers: Set<TrackerRecord> = []
     var visibleCategories: [TrackerCategory] = []
     var currentDate: Date?
     
@@ -132,8 +132,6 @@ final class TrackersViewController: UIViewController {
     private func didTapPlusButton() {
         let creatingTrackerViewController = CreatingTrackerViewController()
         creatingTrackerViewController.delegate = self
-        
-//        let navigatonViewController = UINavigationController(rootViewController: CreatingTrackerViewController())
         present(creatingTrackerViewController, animated: true)
     }
     
@@ -184,19 +182,6 @@ final class TrackersViewController: UIViewController {
             searchTextField.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             searchTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 7),
             searchTextField.trailingAnchor.constraint(equalTo: datePicker.trailingAnchor),
-            
-//            collectionView.leadingAnchor.constraint(equalTo: searchTextField.leadingAnchor),
-//            collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
-//            collectionView.trailingAnchor.constraint(equalTo: searchTextField.trailingAnchor),
-//            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            
-//            placeholderImageView.heightAnchor.constraint(equalToConstant: 80),
-//            placeholderImageView.widthAnchor.constraint(equalToConstant: 80),
-//            placeholderImageView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 230),
-//            placeholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//
-//            placeholderTitleLabel.topAnchor.constraint(equalTo: placeholderImageView.bottomAnchor, constant: 8),
-//            placeholderTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
         
         if categories.count != 0 {
@@ -233,6 +218,8 @@ extension TrackersViewController: UICollectionViewDataSource {
             withReuseIdentifier: TreckersCollectionViewCell.reuseIdentifier,
             for: indexPath
         ) as! TreckersCollectionViewCell
+        
+        cell.delegate = self
         
         let tracker = categories[indexPath.section].trackers[indexPath.row]
         cell.configure(with: tracker)
@@ -305,7 +292,6 @@ extension TrackersViewController: CreatingTrackerViewControllerDelegate {
     func createTrackers(nameCategory: String, schedule: [WeekDay], nameTracker: String, color: UIColor, emoji: String) {
         var updatedCategories = categories
         
-        
         if let existingCategoryIndex = updatedCategories.firstIndex(where: { $0.title == nameCategory }) {
                 let newTracker = Tracker(id: UUID(), name: nameTracker, color: color, emoji: emoji, schedule: schedule)
                 let updatedTrackers = updatedCategories[existingCategoryIndex].trackers + [newTracker]
@@ -319,6 +305,20 @@ extension TrackersViewController: CreatingTrackerViewControllerDelegate {
         DataManager.shared.updateTrackerCategory(updatedCategories: updatedCategories)
         
         collectionView.reloadData()
-//        return updatedCategories
+    }
+}
+
+// MARK: - TreckersCollectionViewCellDelegate
+
+extension TrackersViewController: TreckersCollectionViewCellDelegate {
+    func updateCompletedTrackers(trackerID: UUID) {
+            let record = TrackerRecord(trackerID: trackerID, date: Date())
+            
+            if completedTrackers.contains(record) {
+                completedTrackers.remove(record)
+            } else {
+                completedTrackers.insert(record)
+            }
+        collectionView.reloadData()
     }
 }

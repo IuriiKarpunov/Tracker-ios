@@ -118,5 +118,4 @@ extension CreatingTrackerViewController: NewHabitOrEventViewControllerDelegate {
     func createTrackers(nameCategory: String, schedule: [WeekDay], nameTracker: String, color: UIColor, emoji: String) {
         delegate?.createTrackers(nameCategory: nameCategory, schedule: schedule, nameTracker: nameTracker, color: color, emoji: emoji)
     }
-    
 }

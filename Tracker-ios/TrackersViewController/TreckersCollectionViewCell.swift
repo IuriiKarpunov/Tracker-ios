@@ -10,7 +10,8 @@ import UIKit
 final class TreckersCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "ScheduleCell"
-    
+    private var trackerID: UUID?
+    weak var delegate: TreckersCollectionViewCellDelegate?
     //MARK: - Layout variables
     
     private let nameLabel: UILabel = {
@@ -79,21 +80,29 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     }
     
     func configure(with tracker: Tracker) {
-           nameLabel.text = tracker.name
-           emojiLabel.text = tracker.emoji
-           colorView.backgroundColor = tracker.color
-           // Настройка других свойств ячейки на основе данных трекера
-       }
+        nameLabel.text = tracker.name
+        emojiLabel.text = tracker.emoji
+        colorView.backgroundColor = tracker.color
+        trackerID = tracker.id
+    }
+    
+    func updateButtonImage() {
+        if let currentImage = executeButton.currentImage {
+            let currentImageName = (currentImage == UIImage(named: "plusCellButton.png")) ? "executeCellButton.png" : "plusCellButton.png"
+            let newImage = UIImage(named: currentImageName)
+            executeButton.setImage(newImage, for: .normal)
+        }
+    }
     
     // MARK: - IBAction
     
     @objc
     private func didTapPlusButton() {
-        if let currentImage = executeButton.currentImage {
-                let currentImageName = (currentImage == UIImage(named: "plusCellButton.png")) ? "executeCellButton.png" : "plusCellButton.png"
-                let newImage = UIImage(named: currentImageName)
-                executeButton.setImage(newImage, for: .normal)
-            }
+        guard let trackerID = trackerID else {
+            return
+        }
+        delegate?.updateCompletedTrackers(trackerID: trackerID)
+        updateButtonImage()
     }
     
     // MARK: - Private Methods
