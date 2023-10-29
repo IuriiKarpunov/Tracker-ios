@@ -215,6 +215,7 @@ final class NewHabitOrEventViewController: UIViewController {
         let scheduleViewController = ScheduleViewController()
         scheduleViewController.delegate = self
         present(scheduleViewController, animated: true)
+        textField.resignFirstResponder()
     }
     
     @objc
@@ -400,10 +401,16 @@ extension NewHabitOrEventViewController: UITextFieldDelegate {
 
 extension NewHabitOrEventViewController: ScheduleViewControllerDelegate {
     func createSchedule(schedule: [WeekDay]) {
-        self.schedule = schedule
-        headerScheduleLabel.text = schedule.map { $0.shortName }.joined(separator: ", ")
-        headerScheduleUpdate()
-        addButton()
+        let sortedSchedule = schedule.sorted { (firstDay, secondDay) -> Bool in
+                return firstDay.rawValue < secondDay.rawValue
+            }
+            
+            let filteredAndSortedSchedule = WeekDay.allCases.filter { sortedSchedule.contains($0) }
+            
+            self.schedule = filteredAndSortedSchedule
+            headerScheduleLabel.text = filteredAndSortedSchedule.map { $0.shortName }.joined(separator: ", ")
+            headerScheduleUpdate()
+            addButton()
     }
 }
 

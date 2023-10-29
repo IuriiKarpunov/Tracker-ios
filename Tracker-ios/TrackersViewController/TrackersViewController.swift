@@ -11,10 +11,11 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Subview Properties
     
-    var categories: [TrackerCategory] = DataManager.shared.categories
-    var completedTrackers: Set<TrackerRecord> = []
+    var categories: [TrackerCategory] = []
+    var completedTrackers: [TrackerRecord] = []
     var visibleCategories: [TrackerCategory] = []
     var currentDate: Date?
+    private let dataManager = DataManager.shared
     
     //MARK: - Layout variables
     
@@ -45,11 +46,12 @@ final class TrackersViewController: UIViewController {
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .compact
         picker.addTarget(
-            TrackersViewController.self,
+            self,
             action: #selector(datePickerValueChanged(_:)),
             for: .valueChanged
         )
         picker.translatesAutoresizingMaskIntoConstraints = false
+        
         return picker
     }()
     
@@ -73,7 +75,7 @@ final class TrackersViewController: UIViewController {
         search.clearButtonMode = .whileEditing
         search.delegate = self
         search.translatesAutoresizingMaskIntoConstraints = false
-
+        
         return search
     }()
     
@@ -113,6 +115,7 @@ final class TrackersViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        reloadData()
         view.backgroundColor = .ypWhiteDay
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -137,12 +140,21 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func datePickerValueChanged(_ sender: UIDatePicker) {
-        let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "dd.MM.yy"
-                let selectedDate = dateFormatter.string(from: sender.date)
-                print("Выбранная дата: \(selectedDate)")
+        let selectedDayIndex = sender.date.dayOfWeek() - 1
+        if selectedDayIndex >= 0 {
+            visibleCategories = categories.filter { category in
+                return category.trackers.contains { tracker in
+                    return tracker.containsSelectedDay(selectedDayIndex: selectedDayIndex)
+                }
+            }
+            collectionView.reloadData()
         }
+    }
     
+    @objc
+    private func dateChanged() {
+        
+    }
     // MARK: - Private Methods
     
     private func addSubViews() {
@@ -203,7 +215,22 @@ final class TrackersViewController: UIViewController {
             ])
         }
     }
-
+    
+    private func reloadData() {
+        categories = dataManager.categories
+        visibleCategories = categories
+    }
+    
+    private func getComletedCount(id: UUID) -> Int {
+        var result: Int = 0
+        
+        completedTrackers.forEach { trackerRecord in
+            if trackerRecord.trackerID == id {
+                result += 1
+            }
+        }
+        return result
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -222,17 +249,17 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.delegate = self
         
         let tracker = categories[indexPath.section].trackers[indexPath.row]
-        cell.configure(with: tracker)
+        let isTrackerCompleted = completedTrackers.contains { $0.trackerID == tracker.id }
+        cell.configure(with: tracker, isCompleted: isTrackerCompleted, daysCount: getComletedCount(id: tracker.id))
         
         return cell
     }
 }
 
 // MARK: - UICollectionViewDelegate
-
-extension TrackersViewController: UICollectionViewDelegate {
+extension TrackersViewController: UICollectionViewDelegate{
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return categories.count
+        return visibleCategories.count
     }
 }
 
@@ -311,14 +338,21 @@ extension TrackersViewController: CreatingTrackerViewControllerDelegate {
 // MARK: - TreckersCollectionViewCellDelegate
 
 extension TrackersViewController: TreckersCollectionViewCellDelegate {
-    func updateCompletedTrackers(trackerID: UUID) {
-            let record = TrackerRecord(trackerID: trackerID, date: Date())
-            
-            if completedTrackers.contains(record) {
-                completedTrackers.remove(record)
-            } else {
-                completedTrackers.insert(record)
-            }
+    func updateCompletedTrackers(for cell: TreckersCollectionViewCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else {
+            return
+        }
+        let tracker = categories[indexPath.section].trackers[indexPath.row]
+
+        let schedule = tracker.schedule.map { $0.shortName }.joined(separator: ", ")
+        let record = TrackerRecord(trackerID: tracker.id, date: schedule)
+
+        if completedTrackers.contains(record) {
+            completedTrackers.removeAll { $0 == record }
+        } else {
+            completedTrackers.append(record)
+        }
+
         collectionView.reloadData()
     }
 }

@@ -12,6 +12,8 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     static let reuseIdentifier = "ScheduleCell"
     private var trackerID: UUID?
     weak var delegate: TreckersCollectionViewCellDelegate?
+//    private var daysCount: Int = 0
+    
     //MARK: - Layout variables
     
     private let nameLabel: UILabel = {
@@ -69,6 +71,8 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
+    // MARK: - Lifecycle
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubViews()
@@ -79,30 +83,23 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with tracker: Tracker) {
+    // MARK: - Public Methods
+    
+    func configure(with tracker: Tracker, isCompleted: Bool, daysCount: Int) {
         nameLabel.text = tracker.name
         emojiLabel.text = tracker.emoji
         colorView.backgroundColor = tracker.color
         trackerID = tracker.id
-    }
-    
-    func updateButtonImage() {
-        if let currentImage = executeButton.currentImage {
-            let currentImageName = (currentImage == UIImage(named: "plusCellButton.png")) ? "executeCellButton.png" : "plusCellButton.png"
-            let newImage = UIImage(named: currentImageName)
-            executeButton.setImage(newImage, for: .normal)
-        }
+        
+        updateButtonImage(isCompleted)
+        daysLabel.text = getTextForDaysLabel(daysCount: daysCount)
     }
     
     // MARK: - IBAction
     
     @objc
     private func didTapPlusButton() {
-        guard let trackerID = trackerID else {
-            return
-        }
-        delegate?.updateCompletedTrackers(trackerID: trackerID)
-        updateButtonImage()
+        delegate?.updateCompletedTrackers(for: self)
     }
     
     // MARK: - Private Methods
@@ -141,4 +138,32 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
             executeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12)
         ])
     }
+    
+    private func updateButtonImage(_ isCompleted: Bool) {
+        let imageName = isCompleted ? "executeCellButton.png" : "plusCellButton.png"
+            let image = UIImage(named: imageName)
+            executeButton.setImage(image, for: .normal)
+    }
+    
+   private func getTextForDaysLabel(daysCount: Int) -> String {
+       let lastDigit = daysCount % 10
+          let lastTwoDigits = daysCount % 100
+          
+          var strDay: String
+          
+          if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+              strDay = "дней"
+          } else {
+              switch lastDigit {
+              case 1:
+                  strDay = "день"
+              case 2, 3, 4:
+                  strDay = "дня"
+              default:
+                  strDay = "дней"
+              }
+          }
+          
+          return "\(daysCount) \(strDay)"
+      }
 }
