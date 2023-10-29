@@ -7,10 +7,10 @@
 
 import Foundation
 
-extension Date {
-    func dayOfWeek() -> Int {
-        let calendar = Calendar(identifier: .gregorian) // Используйте грегорианский календарь
-        let components = calendar.dateComponents([.weekday], from: self)
-        return (components.weekday ?? 1) - 1 // Преобразуйте в значение от 0 до 6
-    }
-}
+//extension Date {
+//    func dayOfWeek() -> Int {
+//        let calendar = Calendar(identifier: .gregorian) // Используйте грегорианский календарь
+//        let components = calendar.dateComponents([.weekday], from: self)
+//        return (components.weekday ?? 1) - 1 // Преобразуйте в значение от 0 до 6
+//    }
+//}

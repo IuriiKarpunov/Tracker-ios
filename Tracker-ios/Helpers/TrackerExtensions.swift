@@ -7,12 +7,12 @@
 
 import Foundation
 
-extension Tracker {
-    func containsSelectedDay(selectedDayIndex: Int) -> Bool {
-        guard selectedDayIndex >= 0 && selectedDayIndex < schedule.count else {
-            return false
-        }
-        let selectedDay = schedule[selectedDayIndex]
-        return true
-    }
-}
+//extension Tracker {
+//    func containsSelectedDay(selectedDayIndex: Int) -> Bool {
+//        guard selectedDayIndex >= 0 && selectedDayIndex < schedule.count else {
+//            return false
+//        }
+//        let selectedDay = schedule[selectedDayIndex]
+//        return true
+//    }
+//}
