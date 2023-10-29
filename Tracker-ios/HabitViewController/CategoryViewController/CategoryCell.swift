@@ -41,7 +41,6 @@ final class CategoryCell: UITableViewCell {
         applyConstraints()
     }
     
-    
     // MARK: - Private Methods
     
     private func addSubViews() {
@@ -68,5 +67,4 @@ final class CategoryCell: UITableViewCell {
             propertyImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
         ])
     }
-        
 }

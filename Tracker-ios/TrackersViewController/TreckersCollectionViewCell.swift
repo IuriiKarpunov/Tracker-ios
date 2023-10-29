@@ -9,10 +9,11 @@ import UIKit
 
 final class TreckersCollectionViewCell: UICollectionViewCell {
     
+    // MARK: - Stored Properties
+    
     static let reuseIdentifier = "ScheduleCell"
     private var trackerID: UUID?
     weak var delegate: TreckersCollectionViewCellDelegate?
-//    private var daysCount: Int = 0
     
     //MARK: - Layout variables
     

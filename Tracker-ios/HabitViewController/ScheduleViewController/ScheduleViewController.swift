@@ -9,6 +9,8 @@ import UIKit
 
 final class ScheduleViewController: UIViewController {
     
+    // MARK: - Stored properties
+    
     private var schedule = [WeekDay]()
     weak var delegate: ScheduleViewControllerDelegate?
     

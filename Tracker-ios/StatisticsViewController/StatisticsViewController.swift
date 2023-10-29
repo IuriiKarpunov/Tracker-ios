@@ -13,8 +13,5 @@ class StatisticsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        
     }
-
-
 }

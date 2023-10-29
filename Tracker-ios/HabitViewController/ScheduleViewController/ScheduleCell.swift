@@ -10,7 +10,7 @@ import UIKit
 
 final class ScheduleCell: UITableViewCell {
     
-    // MARK: - Stored properties
+    // MARK: - Stored Properties
     
     weak var delegate: ScheduleCellDelegate?
     private var currentWeekDay: WeekDay?

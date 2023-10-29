@@ -10,8 +10,11 @@ import UIKit
 
 final class NewHabitOrEventViewController: UIViewController {
     
+    // MARK: - Stored properties
+    
     private var category: TrackerCategory?
     private var schedule = [WeekDay]()
+    
     weak var delegate: NewHabitOrEventViewControllerDelegate?
     
     enum HabitOrEvent {

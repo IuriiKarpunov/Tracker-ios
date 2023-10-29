@@ -136,25 +136,7 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func dateChanged() {
-        let calendar = Calendar.current
-        let filterWeekday = calendar.component(.weekday, from: datePicker.date)
-        
-        visibleCategories = categories.compactMap { category in
-            let trackers = category.trackers.filter { tracker in
-                tracker.schedule.contains { weekDay in
-                    weekDay.numberOfDay == filterWeekday
-                } == true
-            }
-            if trackers.isEmpty {
-                return nil
-            }
-            
-            return TrackerCategory(
-                title: category.title,
-                trackers: trackers
-            )
-        }
-        collectionView.reloadData()
+        reloadvisibleCategories()
     }
     
     // MARK: - Private Methods
@@ -233,6 +215,28 @@ final class TrackersViewController: UIViewController {
         }
         return result
     }
+    
+    private func reloadvisibleCategories() {
+        let calendar = Calendar.current
+        let filterWeekday = calendar.component(.weekday, from: datePicker.date)
+        
+        visibleCategories = categories.compactMap { category in
+            let trackers = category.trackers.filter { tracker in
+                tracker.schedule.contains { weekDay in
+                    weekDay.numberOfDay == filterWeekday
+                } == true
+            }
+            if trackers.isEmpty {
+                return nil
+            }
+            
+            return TrackerCategory(
+                title: category.title,
+                trackers: trackers
+            )
+        }
+        collectionView.reloadData()
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -306,13 +310,18 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: collectionView.bounds.width, height: 18)
     }
-
 }
 
 // MARK: - UITextFieldDelegate
 
 extension TrackersViewController: UITextFieldDelegate {
-    // Реализация методов UITextFieldDelegate, если необходимо
+//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//        textField.resignFirstResponder()
+//
+//        reloadvisibleCategories()
+//
+//        return true
+//    }
 }
 
 // MARK: - CreatingTrackerViewControllerDelegate

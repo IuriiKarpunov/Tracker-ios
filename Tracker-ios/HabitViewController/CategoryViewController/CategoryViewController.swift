@@ -9,6 +9,8 @@ import UIKit
 
 final class CategoryViewController: UIViewController {
     
+    // MARK: - Stored properties
+    
     weak var delegate: CategoryViewControllerDelegate?
     private var dataManager = DataManager.shared
     
@@ -143,6 +145,7 @@ final class CategoryViewController: UIViewController {
 }
 
 //MARK: - UITableViewDataSource
+
 extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataManager.categories.count
@@ -164,9 +167,7 @@ extension CategoryViewController: UITableViewDataSource {
         categoryCell.configureCell(category: category)
 
         return categoryCell
-
     }
-
 }
 
 //MARK: - UITableViewDelegate
