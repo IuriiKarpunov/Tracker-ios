@@ -44,6 +44,8 @@ final class TrackersViewController: UIViewController {
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
+        picker.locale = Locale(identifier: "ru_Ru")
+        picker.calendar.firstWeekday = 2
         picker.preferredDatePickerStyle = .compact
         picker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
         picker.translatesAutoresizingMaskIntoConstraints = false
@@ -136,7 +138,7 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func dateChanged() {
-        reloadvisibleCategories()
+        reloadvisibleCategories(text: searchTextField.text, date: datePicker.date)
     }
     
     // MARK: - Private Methods
@@ -147,12 +149,15 @@ final class TrackersViewController: UIViewController {
         view.addSubview(titleLabel)
         view.addSubview(datePicker)
         view.addSubview(searchTextField)
-        if visibleCategories.count != 0 {
-            view.addSubview(collectionView)
-        } else {
-            view.addSubview(placeholderImageView)
-            view.addSubview(placeholderTitleLabel)
-        }
+        view.addSubview(collectionView)
+        view.addSubview(placeholderImageView)
+        view.addSubview(placeholderTitleLabel)
+//        if visibleCategories.count != 0 {
+//            view.addSubview(collectionView)
+//        } else {
+//            view.addSubview(placeholderImageView)
+//            view.addSubview(placeholderTitleLabel)
+//        }
     }
     
     private func applyConstraints() {
@@ -178,26 +183,20 @@ final class TrackersViewController: UIViewController {
             searchTextField.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             searchTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 7),
             searchTextField.trailingAnchor.constraint(equalTo: datePicker.trailingAnchor),
+            
+            collectionView.leadingAnchor.constraint(equalTo: searchTextField.leadingAnchor),
+            collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
+            collectionView.trailingAnchor.constraint(equalTo: searchTextField.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            placeholderImageView.heightAnchor.constraint(equalToConstant: 80),
+            placeholderImageView.widthAnchor.constraint(equalToConstant: 80),
+            placeholderImageView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 230),
+            placeholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            placeholderTitleLabel.topAnchor.constraint(equalTo: placeholderImageView.bottomAnchor, constant: 8),
+            placeholderTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
-        
-        if visibleCategories.count != 0 {
-            NSLayoutConstraint.activate([
-                collectionView.leadingAnchor.constraint(equalTo: searchTextField.leadingAnchor),
-                collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
-                collectionView.trailingAnchor.constraint(equalTo: searchTextField.trailingAnchor),
-                collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-            ])
-        } else {
-            NSLayoutConstraint.activate([
-                placeholderImageView.heightAnchor.constraint(equalToConstant: 80),
-                placeholderImageView.widthAnchor.constraint(equalToConstant: 80),
-                placeholderImageView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 230),
-                placeholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                
-                placeholderTitleLabel.topAnchor.constraint(equalTo: placeholderImageView.bottomAnchor, constant: 8),
-                placeholderTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-            ])
-        }
     }
     
     private func reloadData() {
@@ -216,26 +215,41 @@ final class TrackersViewController: UIViewController {
         return result
     }
     
-    private func reloadvisibleCategories() {
-        let calendar = Calendar.current
-        let filterWeekday = calendar.component(.weekday, from: datePicker.date)
-        
-        visibleCategories = categories.compactMap { category in
-            let trackers = category.trackers.filter { tracker in
-                tracker.schedule.contains { weekDay in
-                    weekDay.numberOfDay == filterWeekday
-                } == true
-            }
-            if trackers.isEmpty {
-                return nil
-            }
+    private func reloadvisibleCategories(text: String?, date: Date) {
+            let calendar = Calendar.current
+            let filterWeekday = calendar.component(.weekday, from: date)
+            let filterText = (text ?? "").lowercased()
             
-            return TrackerCategory(
-                title: category.title,
-                trackers: trackers
-            )
-        }
+        visibleCategories = categories.compactMap { category in
+                let trackers = category.trackers.filter { tracker in
+                    let textCondition = filterText.isEmpty ||
+                    tracker.name.lowercased().contains(filterText)
+                    let dateCondition = tracker.schedule.contains { weekDay in
+                        weekDay.numberOfDay == filterWeekday
+                    } == true
+                    return textCondition && dateCondition
+                }
+                if trackers.isEmpty {
+                    return nil
+                }
+                
+                return TrackerCategory(
+                    title: category.title,
+                    trackers: trackers
+                )
+            }
         collectionView.reloadData()
+        reloadPlaceholder()
+    }
+    
+    private func reloadPlaceholder() {
+        if visibleCategories.count == 0 {
+            placeholderImageView.isHidden = false
+            placeholderTitleLabel.isHidden = false
+        } else {
+            placeholderImageView.isHidden = true
+            placeholderTitleLabel.isHidden = true
+        }
     }
 }
 
@@ -315,20 +329,20 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - UITextFieldDelegate
 
 extension TrackersViewController: UITextFieldDelegate {
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        textField.resignFirstResponder()
-//
-//        reloadvisibleCategories()
-//
-//        return true
-//    }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+
+        reloadvisibleCategories(text: searchTextField.text, date: datePicker.date)
+
+        return true
+    }
 }
 
 // MARK: - CreatingTrackerViewControllerDelegate
 
 extension TrackersViewController: CreatingTrackerViewControllerDelegate {
     func createTrackers(nameCategory: String, schedule: [WeekDay], nameTracker: String, color: UIColor, emoji: String) {
-        var updatedCategories = visibleCategories
+        var updatedCategories = categories
         
         if let existingCategoryIndex = updatedCategories.firstIndex(where: { $0.title == nameCategory }) {
                 let newTracker = Tracker(id: UUID(), name: nameTracker, color: color, emoji: emoji, schedule: schedule)
@@ -341,6 +355,7 @@ extension TrackersViewController: CreatingTrackerViewControllerDelegate {
             updatedCategories.append(newCategory)
         }
         DataManager.shared.updateTrackerCategory(updatedCategories: updatedCategories)
+//        reloadData()
         collectionView.reloadData()
     }
 }
@@ -362,7 +377,7 @@ extension TrackersViewController: TreckersCollectionViewCellDelegate {
         } else {
             completedTrackers.append(record)
         }
-
+        
         collectionView.reloadData()
     }
 }
