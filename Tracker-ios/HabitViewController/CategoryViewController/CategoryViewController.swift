@@ -16,7 +16,7 @@ final class CategoryViewController: UIViewController {
     
     //MARK: - Layout variables
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Категория"
         label.textColor = .ypBlackDay
@@ -26,14 +26,14 @@ final class CategoryViewController: UIViewController {
         return label
     }()
     
-    private let placeholderImageView: UIImageView = {
+    private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "No Photo.png"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
     
-    private let placeholderTitleLabel: UILabel = {
+    private lazy var placeholderTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Привычки и события можно\nобъединить по смыслу"
         label.numberOfLines = 2

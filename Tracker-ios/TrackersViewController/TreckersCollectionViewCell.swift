@@ -12,12 +12,15 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     // MARK: - Stored Properties
     
     static let reuseIdentifier = "ScheduleCell"
+    private var isCompletedToday: Bool = false
     private var trackerID: UUID?
+    private var indexPath: IndexPath?
+    private var selectedDate: Date?
     weak var delegate: TreckersCollectionViewCellDelegate?
     
     //MARK: - Layout variables
     
-    private let nameLabel: UILabel = {
+    private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypWhiteDay
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
@@ -28,7 +31,7 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         return label
     }()
        
-    private let emojiLabel: UILabel = {
+    private lazy var emojiLabel: UILabel = {
         let label = UILabel()
         label.layer.cornerRadius = 12
         label.clipsToBounds = true
@@ -40,14 +43,14 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    private let colorView: UIView = {
+    private lazy var colorView: UIView = {
         let colorView = UIView()
         colorView.layer.cornerRadius = 16
         colorView.translatesAutoresizingMaskIntoConstraints = false
         return colorView
     }()
     
-    private let daysLabel: UILabel = {
+    private lazy var daysLabel: UILabel = {
         let label = UILabel()
         label.text = "0 дней"
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
@@ -58,15 +61,13 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     
     private lazy var executeButton: UIButton = {
         let button = UIButton(type: .custom)
-        let image = UIImage(named: "plusCellButton.png")
-        button.accessibilityIdentifier = "executeButton"
-        button.setImage(image, for: .normal)
+        button.layer.cornerRadius = 17
         button.addTarget(
             self,
             action: #selector(didTapPlusButton),
             for: .touchUpInside
         )
-        button.tintColor = .ypBlackDay
+        button.tintColor = .ypWhiteDay
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
@@ -86,13 +87,18 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Public Methods
     
-    func configure(with tracker: Tracker, isCompleted: Bool, daysCount: Int) {
+    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, daysCount: Int, selectedDate: Date) {
         nameLabel.text = tracker.name
         emojiLabel.text = tracker.emoji
         colorView.backgroundColor = tracker.color
-        trackerID = tracker.id
+        executeButton.backgroundColor = tracker.color
         
-        updateButtonImage(isCompleted)
+        self.trackerID = tracker.id
+        self.isCompletedToday = isCompletedToday
+        self.indexPath = indexPath
+        self.selectedDate = selectedDate
+        
+        updateButtonImage(isCompletedToday )
         daysLabel.text = getTextForDaysLabel(daysCount: daysCount)
     }
     
@@ -100,7 +106,22 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     
     @objc
     private func didTapPlusButton() {
-        delegate?.updateCompletedTrackers(for: self)
+        guard let trackerID = trackerID,
+              let indexPath = indexPath,
+              let selectedDate = selectedDate else {
+            assertionFailure("no trackerId")
+            return
+        }
+        
+        if selectedDate > Date() {
+            return
+        }
+        
+        if isCompletedToday {
+            delegate?.uncompleteTracker(id: trackerID, at: indexPath)
+        } else {
+            delegate?.completeTracker(id: trackerID, at: indexPath)
+        }
     }
     
     // MARK: - Private Methods
@@ -141,8 +162,8 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     }
     
     private func updateButtonImage(_ isCompleted: Bool) {
-        let imageName = isCompleted ? "executeCellButton.png" : "plusCellButton.png"
-            let image = UIImage(named: imageName)
+        let imageName = isCompleted ? "checkmark" : "plus"
+            let image = UIImage(systemName: imageName)
             executeButton.setImage(image, for: .normal)
     }
     

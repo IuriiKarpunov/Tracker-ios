@@ -16,7 +16,7 @@ final class ScheduleViewController: UIViewController {
     
     //MARK: - Layout variables
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Расписание"
         label.textColor = .ypBlackDay

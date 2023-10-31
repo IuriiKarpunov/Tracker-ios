@@ -11,7 +11,7 @@ final class TrackerHeaderCollectionViewCell: UICollectionReusableView {
     
     static let reuseIdentifier = "TrackerHeaderCollectionViewCell"
     
-    private let headerLabel: UILabel = {
+    private lazy var headerLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 19, weight: .bold)

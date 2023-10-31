@@ -14,7 +14,7 @@ final class CreatingTrackerViewController: UIViewController {
     
     //MARK: - Layout variables
     
-    private let creatingTitleLabel: UILabel = {
+    private lazy var creatingTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Создание трекера"
         label.textColor = .ypBlackDay

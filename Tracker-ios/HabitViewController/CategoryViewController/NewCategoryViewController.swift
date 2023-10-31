@@ -11,7 +11,7 @@ final class NewCategoryViewController: UIViewController {
     
     //MARK: - Layout variables
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Новая категория"
         label.textColor = .ypBlackDay

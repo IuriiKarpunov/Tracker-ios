@@ -8,5 +8,6 @@
 import Foundation
 
 protocol TreckersCollectionViewCellDelegate: AnyObject {
-    func updateCompletedTrackers(for cell: TreckersCollectionViewCell)
+    func completeTracker(id: UUID, at indexPath: IndexPath)
+    func uncompleteTracker(id: UUID, at indexPath: IndexPath)
 }

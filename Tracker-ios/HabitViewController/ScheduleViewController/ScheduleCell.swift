@@ -18,7 +18,7 @@ final class ScheduleCell: UITableViewCell {
     
     //MARK: - Layout variables
     
-    private let cellLabel: UILabel = {
+    private lazy var cellLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 17)
@@ -27,7 +27,7 @@ final class ScheduleCell: UITableViewCell {
         return label
     }()
     
-    private var switcherView: UISwitch = {
+    private lazy var switcherView: UISwitch = {
         let switcher = UISwitch()
         switcher.setOn(false, animated: true)
         switcher.onTintColor = .ypBlue

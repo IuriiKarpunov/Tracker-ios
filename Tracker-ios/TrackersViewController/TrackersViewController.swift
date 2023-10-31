@@ -19,7 +19,7 @@ final class TrackersViewController: UIViewController {
     
     //MARK: - Layout variables
     
-    private let navBarItem: UIView = {
+    private lazy var navBarItem: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -41,7 +41,7 @@ final class TrackersViewController: UIViewController {
         return button
     }()
     
-    private let datePicker: UIDatePicker = {
+    private lazy var datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.locale = Locale(identifier: "ru_Ru")
@@ -53,7 +53,7 @@ final class TrackersViewController: UIViewController {
         return picker
     }()
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Трекеры"
         label.textColor = .ypBlackDay
@@ -77,14 +77,14 @@ final class TrackersViewController: UIViewController {
         return search
     }()
     
-    private let placeholderImageView: UIImageView = {
+    private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "No Photo.png"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
     
-    private let placeholderTitleLabel: UILabel = {
+    private lazy var placeholderTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Что будем отслеживать?"
         label.textColor = .ypBlackDay
@@ -95,7 +95,7 @@ final class TrackersViewController: UIViewController {
         return label
     }()
     
-    private let collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: UICollectionViewFlowLayout()
@@ -152,12 +152,6 @@ final class TrackersViewController: UIViewController {
         view.addSubview(collectionView)
         view.addSubview(placeholderImageView)
         view.addSubview(placeholderTitleLabel)
-//        if visibleCategories.count != 0 {
-//            view.addSubview(collectionView)
-//        } else {
-//            view.addSubview(placeholderImageView)
-//            view.addSubview(placeholderTitleLabel)
-//        }
     }
     
     private func applyConstraints() {
@@ -251,6 +245,11 @@ final class TrackersViewController: UIViewController {
             placeholderTitleLabel.isHidden = true
         }
     }
+    
+    private func isSameTrackerRecord(trackerRecord: TrackerRecord, id: UUID) -> Bool {
+        let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
+       return trackerRecord.trackerID  == id && isSameDay
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -269,10 +268,22 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.delegate = self
         
         let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
-        let isTrackerCompleted = completedTrackers.contains { $0.trackerID == tracker.id }
-        cell.configure(with: tracker, isCompleted: isTrackerCompleted, daysCount: getComletedCount(id: tracker.id))
+        let isCompletedToday = isTrackerCompletedToday(id: tracker.id)
+        cell.configure(
+            with: tracker,
+            isCompletedToday: isCompletedToday,
+            indexPath: indexPath,
+            daysCount: getComletedCount(id: tracker.id),
+            selectedDate: datePicker.date
+         )
         
         return cell
+    }
+    
+    private func isTrackerCompletedToday(id: UUID) -> Bool {
+        completedTrackers.contains { trackerRecord in
+            isSameTrackerRecord(trackerRecord: trackerRecord, id: id)
+        }
     }
 }
 
@@ -355,7 +366,6 @@ extension TrackersViewController: CreatingTrackerViewControllerDelegate {
             updatedCategories.append(newCategory)
         }
         DataManager.shared.updateTrackerCategory(updatedCategories: updatedCategories)
-//        reloadData()
         collectionView.reloadData()
     }
 }
@@ -363,21 +373,16 @@ extension TrackersViewController: CreatingTrackerViewControllerDelegate {
 // MARK: - TreckersCollectionViewCellDelegate
 
 extension TrackersViewController: TreckersCollectionViewCellDelegate {
-    func updateCompletedTrackers(for cell: TreckersCollectionViewCell) {
-        guard let indexPath = collectionView.indexPath(for: cell) else {
-            return
+    func completeTracker(id: UUID, at indexPath: IndexPath) {
+        let trackerRecord = TrackerRecord(trackerID: id, date: datePicker.date)
+        completedTrackers.append (trackerRecord)
+        collectionView.reloadItems(at: [indexPath])
+    }
+    
+    func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
+        completedTrackers.removeAll { trackerRecord in
+            isSameTrackerRecord(trackerRecord: trackerRecord, id: id)
         }
-        let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
-
-        let schedule = tracker.schedule.map { $0.shortName }.joined(separator: ", ")
-        let record = TrackerRecord(trackerID: tracker.id, date: schedule)
-
-        if completedTrackers.contains(record) {
-            completedTrackers.removeAll { $0 == record }
-        } else {
-            completedTrackers.append(record)
-        }
-        
-        collectionView.reloadData()
+        collectionView.reloadItems(at: [indexPath])
     }
 }

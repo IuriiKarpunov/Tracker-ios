@@ -15,7 +15,7 @@ final class CategoryCell: UITableViewCell {
     
     //MARK: - Layout variables
     
-    private let cellLabel: UILabel = {
+    private lazy var cellLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 17)
@@ -24,7 +24,7 @@ final class CategoryCell: UITableViewCell {
         return label
     }()
     
-    private let propertyImageView: UIImageView = {
+    private lazy var propertyImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "PropertyDone.png"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isHidden = true
@@ -48,12 +48,8 @@ final class CategoryCell: UITableViewCell {
         contentView.addSubview(propertyImageView)
     }
     
-    func turnOnPropertyImageView() {
-        if propertyImageView.isHidden == true {
-            propertyImageView.isHidden = false
-        } else {
-            propertyImageView.isHidden = true
-        }
+    func togglePropertyImageViewVisibility() {
+        propertyImageView.isHidden = !propertyImageView.isHidden
     }
     
     private func applyConstraints() {

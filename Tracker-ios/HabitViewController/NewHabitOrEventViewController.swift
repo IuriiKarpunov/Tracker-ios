@@ -35,7 +35,7 @@ final class NewHabitOrEventViewController: UIViewController {
     
     //MARK: - Layout variables
     
-    private let newHabitTitleLabel: UILabel = {
+    private lazy var newHabitTitleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
@@ -44,7 +44,7 @@ final class NewHabitOrEventViewController: UIViewController {
         return label
     }()
     
-    private let scrollView: UIScrollView = {
+    private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -52,25 +52,25 @@ final class NewHabitOrEventViewController: UIViewController {
     }()
     
     private lazy var textField: UITextField = {
-        textField = UITextField()
+        let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Введите название трекера"
+        textField.addLeftPadding(16)
         textField.backgroundColor = .ypBackgroundDay
         textField.layer.cornerRadius = 16
-        textField.borderStyle = .roundedRect
         textField.delegate = self
         
         return textField
     }()
     
-    private let categoryImageView: UIImageView = {
+    private lazy var categoryImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "Chevron.png"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
     
-    private let scheduleImageView: UIImageView = {
+    private lazy var scheduleImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "Chevron.png"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -98,7 +98,7 @@ final class NewHabitOrEventViewController: UIViewController {
         return button
     }()
     
-    private let headerCategoryLabel: UILabel = {
+    private lazy var headerCategoryLabel: UILabel = {
         let label = UILabel()
         label.text = ""
         label.textColor = .ypGrey
@@ -130,7 +130,7 @@ final class NewHabitOrEventViewController: UIViewController {
         return button
     }()
     
-    private let headerScheduleLabel: UILabel = {
+    private lazy var headerScheduleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
         label.textColor = .ypGrey
@@ -178,14 +178,14 @@ final class NewHabitOrEventViewController: UIViewController {
         return button
     }()
     
-    private let delimiterView: UIView = {
+    private lazy var delimiterView: UIView = {
         let delimiterView = UIView()
         delimiterView.backgroundColor = .ypGrey
         delimiterView.translatesAutoresizingMaskIntoConstraints = false
         return delimiterView
     }()
     
-    private let errorTitleLabel: UILabel = {
+    private lazy var errorTitleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypRed
         label.font = UIFont.systemFont(ofSize: 17)
@@ -228,9 +228,17 @@ final class NewHabitOrEventViewController: UIViewController {
     
     @objc
     private func didTapCreateButton() {
+        let newSchedule: [WeekDay]
+        
+        if habitOrEvent == .habit {
+            newSchedule = schedule
+        } else {
+            newSchedule = WeekDay.allCases
+        }
+        
         delegate?.createTrackers(
             nameCategory: headerCategoryLabel.text ?? "Новая категория",
-            schedule: schedule,
+            schedule: newSchedule,
             nameTracker: textField.text ?? "Без названия",
             color: .brown,
             emoji: "🫠"
@@ -240,7 +248,7 @@ final class NewHabitOrEventViewController: UIViewController {
             assertionFailure("Invalid Configuration")
             return
         }
-        window.rootViewController = TrackersViewController()
+        window.rootViewController = TabBarController()
     }
     
     // MARK: - Private Methods
