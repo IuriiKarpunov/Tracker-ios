@@ -162,7 +162,7 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     }
     
     private func updateButtonImage(_ isCompleted: Bool) {
-        executeButton.alpha = isCompleted ? 0.5 : 1
+        executeButton.alpha = isCompleted ? 0.3 : 1
         let imageName = isCompleted ? "checkmark" : "plus"
             let image = UIImage(systemName: imageName)
             executeButton.setImage(image, for: .normal)
