@@ -367,21 +367,22 @@ extension TrackersViewController: UITextFieldDelegate {
 
 extension TrackersViewController: CreatingTrackerViewControllerDelegate {
     func createTrackers(tracker: Tracker, categoryName: String) {
-        let categories: [TrackerCategory] = trackerCategoryStore.trackerCategory
-        
-        if let updatedCategories = categories.first(where: { $0.title == categoryName }) {
+        guard let index = categories.firstIndex(where: { $0.title == categoryName }) else {
+            let newCategory = TrackerCategory(title: categoryName, trackers: [tracker])
             do {
-                try trackerCategoryStore.addTracker(tracker, to: updatedCategories)
-            } catch {
-                fatalError("Error adding tracker to existing category: \(error)")
-            }
-        } else {
-            let trackerCategory = TrackerCategory(title: categoryName, trackers: [tracker])
-            do {
-                try trackerCategoryStore.addNewTrackerCategory(trackerCategory)
+                try trackerCategoryStore.addNewTrackerCategory(newCategory)
             } catch {
                 fatalError("Error creating new category: \(error)")
             }
+            collectionView.reloadData()
+            return
+        }
+        
+        let updatedCategory = categories[index]
+        do {
+            try trackerCategoryStore.addTracker(tracker, to: updatedCategory)
+        } catch {
+            fatalError("Error adding tracker to existing category: \(error)")
         }
         
         collectionView.reloadData()

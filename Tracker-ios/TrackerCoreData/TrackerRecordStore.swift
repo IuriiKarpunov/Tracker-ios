@@ -59,9 +59,28 @@ final class TrackerRecordStore: NSObject {
     }
     
     func deleteTrackerRecord(_ trackerRecord: TrackerRecord) throws {
-        let trackerRecordCoreData = TrackerRecordCoreData(context: context)
-        trackerRecordCoreData.trackerID = trackerRecord.trackerID
-        trackerRecordCoreData.date = trackerRecord.date
+        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        
+        fetchRequest.predicate = NSPredicate(
+            format: " %K == %@",
+            #keyPath(TrackerRecordCoreData.trackerID),
+            trackerRecord.trackerID as CVarArg
+        )
+        
+        do {
+            let trackerRecords = try context.fetch(fetchRequest)
+            
+            if let deletingRecord = trackerRecords.first {
+                context.delete(deletingRecord)
+                try context.save()
+            } else {
+                throw NSError(domain: "YourDomain", code: 404, userInfo: [
+                    NSLocalizedDescriptionKey: "No matching record found for deletion. trackerID: \(trackerRecord.trackerID)"
+                ])
+            }
+        } catch {
+            throw error
+        }
     }
     
     func fetchTrackersRecord() throws -> [TrackerRecord] {
