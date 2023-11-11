@@ -9,6 +9,8 @@ import UIKit
 
 final class NewCategoryViewController: UIViewController {
     
+    weak var delegate: NewCategoryViewControllerDelegate?
+    
     //MARK: - Layout variables
     
     private lazy var titleLabel: UILabel = {
@@ -29,7 +31,7 @@ final class NewCategoryViewController: UIViewController {
         textField.layer.cornerRadius = 16
         textField.borderStyle = .roundedRect
         textField.delegate = self
-
+        
         return textField
     }()
     
@@ -64,6 +66,10 @@ final class NewCategoryViewController: UIViewController {
     
     @objc
     private func didTapReadyButton() {
+        if let categoryName = textField.text {
+            let category = TrackerCategory(title: categoryName, trackers: [])
+            delegate?.addNewCategories(category: category)
+        }
         dismiss(animated: true)
     }
     

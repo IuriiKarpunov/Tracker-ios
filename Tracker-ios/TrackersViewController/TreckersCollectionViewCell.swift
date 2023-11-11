@@ -11,7 +11,7 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Stored Properties
     
-    static let reuseIdentifier = "ScheduleCell"
+    static let reuseIdentifier = "TreckersCollectionViewCell"
     private var isCompletedToday: Bool = false
     private var trackerID: UUID?
     private var indexPath: IndexPath?
@@ -30,7 +30,7 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         
         return label
     }()
-       
+    
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
         label.layer.cornerRadius = 12
@@ -98,7 +98,7 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         self.indexPath = indexPath
         self.selectedDate = selectedDate
         
-        updateButtonImage(isCompletedToday )
+        updateButtonImage(isCompletedToday)
         daysLabel.text = getTextForDaysLabel(daysCount: daysCount)
     }
     
@@ -164,29 +164,29 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     private func updateButtonImage(_ isCompleted: Bool) {
         executeButton.alpha = isCompleted ? 0.3 : 1
         let imageName = isCompleted ? "checkmark" : "plus"
-            let image = UIImage(systemName: imageName)
-            executeButton.setImage(image, for: .normal)
+        let image = UIImage(systemName: imageName)
+        executeButton.setImage(image, for: .normal)
     }
     
-   private func getTextForDaysLabel(daysCount: Int) -> String {
-       let lastDigit = daysCount % 10
-          let lastTwoDigits = daysCount % 100
-          
-          var strDay: String
-          
-          if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
-              strDay = "дней"
-          } else {
-              switch lastDigit {
-              case 1:
-                  strDay = "день"
-              case 2, 3, 4:
-                  strDay = "дня"
-              default:
-                  strDay = "дней"
-              }
-          }
-          
-          return "\(daysCount) \(strDay)"
-      }
+    private func getTextForDaysLabel(daysCount: Int) -> String {
+        let lastDigit = daysCount % 10
+        let lastTwoDigits = daysCount % 100
+        
+        var strDay: String
+        
+        if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+            strDay = "дней"
+        } else {
+            switch lastDigit {
+            case 1:
+                strDay = "день"
+            case 2, 3, 4:
+                strDay = "дня"
+            default:
+                strDay = "дней"
+            }
+        }
+        
+        return "\(daysCount) \(strDay)"
+    }
 }
