@@ -13,7 +13,6 @@
 		4A05DCB02ADD895D0051E166 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A05DCAF2ADD895D0051E166 /* ScheduleViewController.swift */; };
 		4A05DCB22ADD97590051E166 /* ScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A05DCB12ADD97590051E166 /* ScheduleCell.swift */; };
 		4A05DCB42AE1446C0051E166 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A05DCB32AE1446C0051E166 /* CategoryCell.swift */; };
-		4A05DCB62AE2A89F0051E166 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A05DCB52AE2A89F0051E166 /* DataManager.swift */; };
 		4A05DCB82AE3F42D0051E166 /* ScheduleCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A05DCB72AE3F42D0051E166 /* ScheduleCellDelegate.swift */; };
 		4A05DCBA2AE3F5CA0051E166 /* ScheduleViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A05DCB92AE3F5CA0051E166 /* ScheduleViewControllerDelegate.swift */; };
 		4A05DCBC2AE465040051E166 /* CategoryViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A05DCBB2AE465040051E166 /* CategoryViewControllerDelegate.swift */; };
@@ -54,7 +53,6 @@
 		4A05DCAF2ADD895D0051E166 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		4A05DCB12ADD97590051E166 /* ScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCell.swift; sourceTree = "<group>"; };
 		4A05DCB32AE1446C0051E166 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
-		4A05DCB52AE2A89F0051E166 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		4A05DCB72AE3F42D0051E166 /* ScheduleCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCellDelegate.swift; sourceTree = "<group>"; };
 		4A05DCB92AE3F5CA0051E166 /* ScheduleViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewControllerDelegate.swift; sourceTree = "<group>"; };
 		4A05DCBB2AE465040051E166 /* CategoryViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewControllerDelegate.swift; sourceTree = "<group>"; };
@@ -120,7 +118,6 @@
 		4A05DCA52ADAB5F90051E166 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				4A05DCB52AE2A89F0051E166 /* DataManager.swift */,
 				4A05DCA62ADAB60C0051E166 /* UIColor+Extensions.swift */,
 				4AA75A6F2AF030B800C26CD7 /* UITextField+Extensions.swift */,
 				4A2583432AFED607007EB2D7 /* String+Extension.swift */,
@@ -323,7 +320,6 @@
 				4A05DCAA2ADAC4B80051E166 /* CategoryViewController.swift in Sources */,
 				4A3E79002AF79757002CA8D1 /* EmojiAndColorHeaderView.swift in Sources */,
 				4AA083422AD7197800D8D18D /* NewHabitOrEventViewController.swift in Sources */,
-				4A05DCB62AE2A89F0051E166 /* DataManager.swift in Sources */,
 				4AC281D52AC967FA00D232B4 /* AppDelegate.swift in Sources */,
 				4AC281D72AC967FA00D232B4 /* SceneDelegate.swift in Sources */,
 				4A05DCBA2AE3F5CA0051E166 /* ScheduleViewControllerDelegate.swift in Sources */,
