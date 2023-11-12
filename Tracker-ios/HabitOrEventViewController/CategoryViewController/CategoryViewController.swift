@@ -87,8 +87,6 @@ final class CategoryViewController: UIViewController {
         turnOnViews()
         addSubViews()
         applyConstraints()
-        
-        self.hideKeyboardWhenTappedAround()
     }
     
     // MARK: - IBAction

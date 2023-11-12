@@ -361,6 +361,11 @@ extension TrackersViewController: UITextFieldDelegate {
         reloadvisibleCategories(text: searchTextField.text, date: datePicker.date)
         return true
     }
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let searchText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
+        reloadvisibleCategories(text: searchText, date: datePicker.date)
+        return true
+    }
 }
 
 // MARK: - CreatingTrackerViewControllerDelegate

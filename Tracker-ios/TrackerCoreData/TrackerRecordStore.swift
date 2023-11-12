@@ -21,12 +21,14 @@ final class TrackerRecordStore: NSObject {
     //MARK: - Private Variables
     
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>!
+    private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>?
     
     //MARK: - Initialization
     
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        guard let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext else {
+            fatalError("Unable to get Core Data context")
+        }
         try! self.init(context: context)
     }
     

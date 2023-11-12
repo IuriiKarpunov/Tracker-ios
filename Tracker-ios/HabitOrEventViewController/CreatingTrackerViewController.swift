@@ -45,7 +45,7 @@ final class CreatingTrackerViewController: UIViewController {
     
     private lazy var eventButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Нерегулярные событие", for: .normal)
+        button.setTitle("Нерегулярное событие", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhiteDay, for: .normal)
         button.accessibilityIdentifier = "eventButton"

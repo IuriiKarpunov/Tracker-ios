@@ -39,7 +39,7 @@ final class TrackerCategoryStore: NSObject {
     
     var trackerCategory: [TrackerCategory] {
         guard
-            let objects = self.fetchedResultsController.fetchedObjects,
+            let objects = self.fetchedResultsController?.fetchedObjects,
             let trackerCategory = try? objects.map({ try self.trackerCategory(from: $0) })
         else { return [] }
         return trackerCategory
@@ -48,7 +48,7 @@ final class TrackerCategoryStore: NSObject {
     //MARK: - Private Variables
     
     private let context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
+    private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>?
     private var insertedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
     private var updatedIndexes: IndexSet?
@@ -57,7 +57,9 @@ final class TrackerCategoryStore: NSObject {
     //MARK: - Initialization
     
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        guard let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext else {
+            fatalError("Unable to get Core Data context")
+        }
         try! self.init(context: context)
     }
     
@@ -103,7 +105,7 @@ final class TrackerCategoryStore: NSObject {
     }
     
     func addTracker(_ tracker: Tracker, to trackerCategory: TrackerCategory) throws {
-        let category = fetchedResultsController.fetchedObjects?.first {
+        let category = fetchedResultsController?.fetchedObjects?.first {
             $0.title == trackerCategory.title
         }
         let trackerCoreData = TrackerCoreData(context: context)
