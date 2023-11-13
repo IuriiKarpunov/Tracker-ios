@@ -12,7 +12,9 @@ final class CategoryViewController: UIViewController {
     // MARK: - Stored properties
     
     weak var delegate: CategoryViewControllerDelegate?
-    private var dataManager = DataManager.shared
+    private var trackerCategoryStore = TrackerCategoryStore.shared
+    private var categories: [TrackerCategory] = []
+    private var tableViewHeightConstraint: NSLayoutConstraint?
     
     //MARK: - Layout variables
     
@@ -49,7 +51,7 @@ final class CategoryViewController: UIViewController {
         let tableView = UITableView()
         tableView.rowHeight = 75
         tableView.layer.cornerRadius = 16
-        tableView.backgroundColor = .ypGrey
+        tableView.backgroundColor = .ypBackgroundDay
         tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -79,6 +81,7 @@ final class CategoryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        reloadData()
         view.backgroundColor = .ypWhiteDay
         tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.reuseIdentifier)
         turnOnViews()
@@ -90,11 +93,21 @@ final class CategoryViewController: UIViewController {
     
     @objc
     private func didTapAddCategoryButton() {
-        let navigatonViewController = UINavigationController(rootViewController: NewCategoryViewController())
+        let newCategoryViewController = NewCategoryViewController()
+        newCategoryViewController.delegate = self
+        let navigatonViewController = UINavigationController(rootViewController: newCategoryViewController)
         present(navigatonViewController, animated: true)
     }
     
     // MARK: - Private Methods
+    
+    private func calculateTableViewHeight() -> CGFloat {
+        return CGFloat(categories.count * 75)
+    }
+    
+    private func reloadData() {
+        categories = trackerCategoryStore.trackerCategory
+    }
     
     private func addSubViews() {
         view.addSubview(titleLabel)
@@ -105,7 +118,7 @@ final class CategoryViewController: UIViewController {
     }
     
     private func turnOnViews() {
-        if dataManager.categories.count > 0 {
+        if categories.count > 0 {
             tableView.isHidden = false
             placeholderImageView.isHidden = true
             placeholderTitleLabel.isHidden = true
@@ -114,7 +127,6 @@ final class CategoryViewController: UIViewController {
             placeholderImageView.isHidden = false
             placeholderTitleLabel.isHidden = false
         }
-            
     }
     
     private func applyConstraints() {
@@ -122,7 +134,6 @@ final class CategoryViewController: UIViewController {
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 21),
             
-            tableView.heightAnchor.constraint(equalToConstant: CGFloat(dataManager.categories.count * 75)),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
@@ -141,6 +152,9 @@ final class CategoryViewController: UIViewController {
             addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             addCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
+        
+        tableViewHeightConstraint = tableView.heightAnchor.constraint(equalToConstant: calculateTableViewHeight())
+        tableViewHeightConstraint?.isActive = true
     }
 }
 
@@ -148,24 +162,24 @@ final class CategoryViewController: UIViewController {
 
 extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataManager.categories.count
+        return categories.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.reuseIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.reuseIdentifier, for: indexPath)
         
         guard let categoryCell = cell as? CategoryCell else {
             return UITableViewCell()
         }
         
         categoryCell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        if indexPath.row == dataManager.categories.count - 1 {
+        if indexPath.row == categories.count - 1 {
             categoryCell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
-            }
+        }
         
-        let category = dataManager.categories[indexPath.row].title
+        let category = categories[indexPath.row].title
         categoryCell.configureCell(category: category)
-
+        
         return categoryCell
     }
 }
@@ -176,9 +190,23 @@ extension CategoryViewController: UITableViewDelegate {
         guard let delegate = delegate else {
             return
         }
-        let category = dataManager.categories[indexPath.row].title
+        let category = categories[indexPath.row].title
         delegate.updateCategory(category: category)
         tableView.deselectRow(at: indexPath, animated: false)
         dismiss(animated: true)
+    }
+}
+
+//MARK: - NewCategoryViewControllerDelegate
+
+extension CategoryViewController: NewCategoryViewControllerDelegate {
+    func addNewCategories(category: TrackerCategory) {
+        if !categories.contains(where: { $0.title == category.title }) {
+            categories.append(category)
+            tableView.reloadData()
+            turnOnViews()
+            
+            tableViewHeightConstraint?.constant = calculateTableViewHeight()
+        }
     }
 }

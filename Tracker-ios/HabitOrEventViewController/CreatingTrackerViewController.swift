@@ -45,7 +45,7 @@ final class CreatingTrackerViewController: UIViewController {
     
     private lazy var eventButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Нерегулярные событие", for: .normal)
+        button.setTitle("Нерегулярное событие", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhiteDay, for: .normal)
         button.accessibilityIdentifier = "eventButton"
@@ -115,7 +115,7 @@ final class CreatingTrackerViewController: UIViewController {
 // MARK: - IBAction NewHabitOrEventViewControllerDelegate
 
 extension CreatingTrackerViewController: NewHabitOrEventViewControllerDelegate {
-    func createTrackers(nameCategory: String, schedule: [WeekDay], nameTracker: String, color: UIColor, emoji: String) {
-        delegate?.createTrackers(nameCategory: nameCategory, schedule: schedule, nameTracker: nameTracker, color: color, emoji: emoji)
+    func createTrackers(tracker: Tracker, categoryName: String) {
+        delegate?.createTrackers(tracker: tracker, categoryName: categoryName)
     }
 }

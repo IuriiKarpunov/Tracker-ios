@@ -9,6 +9,8 @@ import UIKit
 
 final class NewCategoryViewController: UIViewController {
     
+    weak var delegate: NewCategoryViewControllerDelegate?
+    
     //MARK: - Layout variables
     
     private lazy var titleLabel: UILabel = {
@@ -22,14 +24,14 @@ final class NewCategoryViewController: UIViewController {
     }()
     
     private lazy var textField: UITextField = {
-        textField = UITextField()
+        let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Введите название категории"
+        textField.addLeftPadding(16)
         textField.backgroundColor = .ypBackgroundDay
         textField.layer.cornerRadius = 16
-        textField.borderStyle = .roundedRect
         textField.delegate = self
-
+        
         return textField
     }()
     
@@ -58,12 +60,17 @@ final class NewCategoryViewController: UIViewController {
         view.backgroundColor = .ypWhiteDay
         addSubViews()
         applyConstraints()
+        self.hideKeyboardWhenTappedAround()
     }
     
     // MARK: - IBAction
     
     @objc
     private func didTapReadyButton() {
+        if let categoryName = textField.text {
+            let category = TrackerCategory(title: categoryName, trackers: [])
+            delegate?.addNewCategories(category: category)
+        }
         dismiss(animated: true)
     }
     
@@ -94,16 +101,17 @@ final class NewCategoryViewController: UIViewController {
 }
 
 extension NewCategoryViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let text = textField.text,
-           text.count > 0 {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let newText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
+        
+        if newText.count > 0 {
             readyButton.isEnabled = true
             readyButton.backgroundColor = UIColor.ypBlackDay
         } else {
             readyButton.isEnabled = false
             readyButton.backgroundColor = UIColor.ypGrey
         }
-        textField.resignFirstResponder()
+        
         return true
     }
 }
