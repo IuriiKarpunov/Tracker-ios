@@ -27,6 +27,7 @@
 		4A2583442AFED607007EB2D7 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2583432AFED607007EB2D7 /* String+Extension.swift */; };
 		4A29CECD2B04F7C5009F413C /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A29CECC2B04F7C5009F413C /* OnboardingViewController.swift */; };
 		4A29CED32B0508BB009F413C /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A29CED22B0508BB009F413C /* UIView+Extensions.swift */; };
+		4A29CEF72B07736E009F413C /* CategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A29CEF62B07736E009F413C /* CategoryViewModel.swift */; };
 		4A3E78FC2AF77804002CA8D1 /* NewCategoryViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3E78FB2AF77804002CA8D1 /* NewCategoryViewControllerDelegate.swift */; };
 		4A3E79002AF79757002CA8D1 /* EmojiAndColorHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3E78FF2AF79757002CA8D1 /* EmojiAndColorHeaderView.swift */; };
 		4A90AF9D2AFF964600A83B74 /* Keyboard+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A90AF9C2AFF964600A83B74 /* Keyboard+Extensions.swift */; };
@@ -69,6 +70,7 @@
 		4A2583432AFED607007EB2D7 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		4A29CECC2B04F7C5009F413C /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		4A29CED22B0508BB009F413C /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
+		4A29CEF62B07736E009F413C /* CategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewModel.swift; sourceTree = "<group>"; };
 		4A3E78FB2AF77804002CA8D1 /* NewCategoryViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryViewControllerDelegate.swift; sourceTree = "<group>"; };
 		4A3E78FF2AF79757002CA8D1 /* EmojiAndColorHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiAndColorHeaderView.swift; sourceTree = "<group>"; };
 		4A90AF9C2AFF964600A83B74 /* Keyboard+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard+Extensions.swift"; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				4A05DCA92ADAC4B80051E166 /* CategoryViewController.swift */,
+				4A29CEF62B07736E009F413C /* CategoryViewModel.swift */,
 				4A05DCB32AE1446C0051E166 /* CategoryCell.swift */,
 				4A05DCAB2ADB074C0051E166 /* NewCategoryViewController.swift */,
 				4A05DCBB2AE465040051E166 /* CategoryViewControllerDelegate.swift */,
@@ -318,6 +321,7 @@
 				4A29CED32B0508BB009F413C /* UIView+Extensions.swift in Sources */,
 				4A29CECD2B04F7C5009F413C /* OnboardingViewController.swift in Sources */,
 				4AA0833D2AD6EB0900D8D18D /* TrackerRecord.swift in Sources */,
+				4A29CEF72B07736E009F413C /* CategoryViewModel.swift in Sources */,
 				4A25833E2AFBBEA3007EB2D7 /* TrackerStore.swift in Sources */,
 				4A2583442AFED607007EB2D7 /* String+Extension.swift in Sources */,
 				4A05DCC22AEA72940051E166 /* NewHabitOrEventViewControllerDelegate.swift in Sources */,

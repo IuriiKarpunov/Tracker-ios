@@ -9,6 +9,8 @@ import UIKit
 
 class OnboardingViewController: UIPageViewController {
     
+    //MARK: - Layout variables
+    
     private lazy var onboardingPages: [UIViewController] = {
         return [blueViewController, redViewController]
     }()
