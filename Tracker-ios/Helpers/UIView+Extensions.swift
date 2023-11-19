@@ -10,9 +10,15 @@ import UIKit
 extension UIView {
     func addBackground(image imageName: String) {
         let imageView = UIImageView(image: UIImage(named: imageName))
-        imageView.frame = bounds
-        imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(imageView)
+        
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(equalTo: topAnchor),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
         sendSubviewToBack(imageView)
     }
 }

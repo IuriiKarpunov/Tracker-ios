@@ -12,7 +12,6 @@ final class CategoryCell: UITableViewCell {
     // MARK: - Stored properties
     
     static let reuseIdentifier = "CategoryCell"
-//    private var isPropertyImageViewVisible = false
     
     //MARK: - Layout variables
     
@@ -48,11 +47,6 @@ final class CategoryCell: UITableViewCell {
         contentView.addSubview(cellLabel)
         contentView.addSubview(propertyImageView)
     }
-    
-//    func setPropertyImageViewVisible(_ visible: Bool) {
-//           isPropertyImageViewVisible = visible
-//           propertyImageView.isHidden = !visible
-//       }
     
     func togglePropertyImageViewVisibility() {
         propertyImageView.isHidden = !propertyImageView.isHidden
