@@ -15,6 +15,7 @@ final class CategoryViewController: UIViewController {
     private var trackerCategoryStore = TrackerCategoryStore.shared
     private var categories: [TrackerCategory] = []
     private var tableViewHeightConstraint: NSLayoutConstraint?
+    private var categoryViewModel = CategoryViewModel()
     
     //MARK: - Layout variables
     
@@ -106,7 +107,8 @@ final class CategoryViewController: UIViewController {
     }
     
     private func reloadData() {
-        categories = trackerCategoryStore.trackerCategory
+        categoryViewModel.fetchCategories()
+        categories = categoryViewModel.categories
     }
     
     private func addSubViews() {
@@ -162,7 +164,7 @@ final class CategoryViewController: UIViewController {
 
 extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return categoryViewModel.numberOfCategories()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -177,7 +179,7 @@ extension CategoryViewController: UITableViewDataSource {
             categoryCell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
         }
         
-        let category = categories[indexPath.row].title
+        let category = categoryViewModel.category(at: indexPath.row)
         categoryCell.configureCell(category: category)
         
         return categoryCell
@@ -187,10 +189,16 @@ extension CategoryViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate
 extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else {
+            return
+        }
+        cell.togglePropertyImageViewVisibility()
+        
         guard let delegate = delegate else {
             return
         }
-        let category = categories[indexPath.row].title
+        
+        let category = categoryViewModel.category(at: indexPath.row)
         delegate.updateCategory(category: category)
         tableView.deselectRow(at: indexPath, animated: false)
         dismiss(animated: true)
@@ -201,12 +209,11 @@ extension CategoryViewController: UITableViewDelegate {
 
 extension CategoryViewController: NewCategoryViewControllerDelegate {
     func addNewCategories(category: TrackerCategory) {
-        if !categories.contains(where: { $0.title == category.title }) {
-            categories.append(category)
-            tableView.reloadData()
-            turnOnViews()
-            
-            tableViewHeightConstraint?.constant = calculateTableViewHeight()
-        }
+        categoryViewModel.addCategory(category)
+        categories = categoryViewModel.categories
+        tableView.reloadData()
+        turnOnViews()
+        
+        tableViewHeightConstraint?.constant = calculateTableViewHeight()
     }
 }
