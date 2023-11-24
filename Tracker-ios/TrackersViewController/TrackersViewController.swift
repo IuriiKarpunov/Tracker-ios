@@ -110,6 +110,7 @@ final class TrackersViewController: UIViewController {
             TreckersCollectionViewCell.self,
             forCellWithReuseIdentifier: TreckersCollectionViewCell.reuseIdentifier
         )
+        collectionView.backgroundColor = .clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
