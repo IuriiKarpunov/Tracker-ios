@@ -14,7 +14,7 @@ class StatisticsViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Статистика"
+        label.text = NSLocalizedString("statistics", comment: "Statistics")
         label.textColor = .ypBlackDay
         label.font = UIFont.boldSystemFont(ofSize: 34)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -31,7 +31,7 @@ class StatisticsViewController: UIViewController {
     
     private lazy var placeholderTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Анализировать пока нечего"
+        label.text = NSLocalizedString("thereIsNothingToAnalyzeYet", comment: "There is nothing to analyze yet")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false

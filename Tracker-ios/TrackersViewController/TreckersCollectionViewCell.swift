@@ -99,7 +99,7 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         self.selectedDate = selectedDate
         
         updateButtonImage(isCompletedToday)
-        daysLabel.text = getTextForDaysLabel(daysCount: daysCount)
+        daysLabel.text = getLocalizedDaysString(daysCount: daysCount)
     }
     
     // MARK: - IBAction
@@ -168,25 +168,8 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         executeButton.setImage(image, for: .normal)
     }
     
-    private func getTextForDaysLabel(daysCount: Int) -> String {
-        let lastDigit = daysCount % 10
-        let lastTwoDigits = daysCount % 100
-        
-        var strDay: String
-        
-        if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
-            strDay = "дней"
-        } else {
-            switch lastDigit {
-            case 1:
-                strDay = "день"
-            case 2, 3, 4:
-                strDay = "дня"
-            default:
-                strDay = "дней"
-            }
-        }
-        
-        return "\(daysCount) \(strDay)"
+    private func getLocalizedDaysString(daysCount: Int) -> String {
+        let localizedFormat = NSLocalizedString("daysString", comment: "")
+        return String.localizedStringWithFormat(localizedFormat, daysCount)
     }
 }

@@ -1,0 +1,61 @@
+/* 
+  Localizable.strings
+  Tracker-ios
+
+  Created by Iurii on 23.11.23.
+  
+*/
+
+"trackOnlyWhatYouWant" = "Track only what you want";
+"evenIfIt'sNotLitersOfWaterAndYoga" = "Even if it's not liters of water and yoga";
+"thisIsTechnology" = "This is technology!";
+
+"statistics" = "Statistics";
+"thereIsNothingToAnalyzeYet" = "There is nothing to analyze yet";
+
+"trackers" = "Trackers";
+"search" = "Search";
+"whatWillWeTrack" = "What will we track?";
+
+"creatingATracker" = "Creating a tracker";
+"habit" = "Habit";
+"irregularEvent" = "Irregular event";
+
+"color" = "Color";
+"enterTrackerName" = "Enter tracker name";
+"category" = "Category";
+"schedule" = "Schedule";
+"cancel" = "Cancel";
+"create" = "Create";
+"untitled" = "Untitled";
+"newCategory" = "New category";
+"newHabit" = "New habit";
+"newIrregularEvent" = "New irregular event";
+"limit38characters" = "Limit 38 characters";
+
+"schedule" = "Schedule";
+"ready" = "Ready";
+
+"category" = "Category";
+"habitsAndEvents" = "Habits and events can\nbe combined by meaning";
+"addCategory" = "Add category";
+
+"newCategory" = "New category";
+"enterCategoryName" = "Enter category name";
+"ready" = "Ready";
+
+"mondayFull" = "Monday";
+"tuesdayFull" = "Tuesday";
+"wednesdayFull" = "Wednesday";
+"thursdayFull" = "Thursday";
+"fridayFull" = "Friday";
+"saturdayFull" = "Saturday";
+"sundayFull" = "Sunday";
+    
+"mondayShort" = "Mon";
+"tuesdayShort" = "Tue";
+"wednesdayShort" = "Wed";
+"thursdayShort" = "Thu";
+"fridayShort" = "Fri";
+"saturdayShort" = "Sat";
+"sundayShort" = "Sun";

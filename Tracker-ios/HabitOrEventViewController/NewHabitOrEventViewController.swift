@@ -56,7 +56,7 @@ final class NewHabitOrEventViewController: UIViewController {
     ]
     
     private let emojiSectionHeaderTitle = "Emoji"
-    private let colorSectionHeaderTitle = "Цвет"
+    private let colorSectionHeaderTitle = NSLocalizedString("color", comment: "Color")
     
     //MARK: - Layout variables
     
@@ -81,7 +81,7 @@ final class NewHabitOrEventViewController: UIViewController {
     private lazy var textField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Введите название трекера"
+        textField.placeholder = NSLocalizedString("enterTrackerName", comment: "Enter tracker name")
         textField.addLeftPadding(16)
         textField.backgroundColor = .ypBackgroundDay
         textField.layer.cornerRadius = 16
@@ -107,7 +107,7 @@ final class NewHabitOrEventViewController: UIViewController {
     private lazy var categoryButton: UIButton = {
         let button = UIButton(type: .system)
         button.accessibilityIdentifier = "categoryButton"
-        button.setTitle("Категория", for: .normal)
+        button.setTitle(NSLocalizedString("category", comment: "Category"), for: .normal)
         button.setTitleColor(.ypBlackDay, for: .normal)
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
         button.titleLabel?.font = .systemFont(ofSize: 17)
@@ -138,7 +138,7 @@ final class NewHabitOrEventViewController: UIViewController {
     private lazy var scheduleButton: UIButton = {
         let button = UIButton(type: .system)
         button.accessibilityIdentifier = "scheduleButton"
-        button.setTitle("Расписание", for: .normal)
+        button.setTitle(NSLocalizedString("schedule", comment: "Schedule"), for: .normal)
         button.setTitleColor(.ypBlackDay, for: .normal)
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
         button.titleLabel?.font = .systemFont(ofSize: 17)
@@ -193,7 +193,7 @@ final class NewHabitOrEventViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Отменить", for: .normal)
+        button.setTitle(NSLocalizedString("cancel", comment: "Cancel"), for: .normal)
         button.setTitleColor(.ypRed, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.accessibilityIdentifier = "cancelButton"
@@ -213,7 +213,7 @@ final class NewHabitOrEventViewController: UIViewController {
     
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Создать", for: .normal)
+        button.setTitle(NSLocalizedString("create", comment: "Create"), for: .normal)
         button.setTitleColor(.ypWhiteDay, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.accessibilityIdentifier = "createButton"
@@ -299,12 +299,15 @@ final class NewHabitOrEventViewController: UIViewController {
         
         let newTracker = Tracker(
             id: UUID(),
-            name: textField.text ?? "Без названия",
+            name: textField.text ?? NSLocalizedString("untitled", comment: "Untitled"),
             color: selectedColor ?? .ypColorSelection1,
             emoji: selectedEmoji ?? "",
             schedule: newSchedule
         )
-        delegate?.createTrackers(tracker: newTracker, categoryName: headerCategoryLabel.text ?? "Новая категория")
+        delegate?.createTrackers(
+            tracker: newTracker,
+            categoryName: headerCategoryLabel.text ?? NSLocalizedString("newCategory", comment: "New category")
+        )
         
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid Configuration")
@@ -339,11 +342,11 @@ final class NewHabitOrEventViewController: UIViewController {
     private func creatHabitOrEvent() {
         switch habitOrEvent {
         case .habit:
-            newHabitTitleLabel.text = "Новая привычка"
+            newHabitTitleLabel.text = NSLocalizedString("newHabit", comment: "New habit")
             categoryButton.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             break
         case .event:
-            newHabitTitleLabel.text = "Новое нерегулярное событие"
+            newHabitTitleLabel.text = NSLocalizedString("newIrregularEvent", comment: "New irregular event")
             break
         }
     }
@@ -560,7 +563,7 @@ extension NewHabitOrEventViewController: UITextFieldDelegate {
             let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
             
             if updatedText.count > 38 {
-                errorTitleLabel.text = "Ограничение 38 символов"
+                errorTitleLabel.text = NSLocalizedString("limit38characters", comment: "Limit 38 characters")
                 return false
             } else {
                 errorTitleLabel.text = ""

@@ -21,7 +21,7 @@ final class CategoryViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Категория"
+        label.text = NSLocalizedString("category", comment: "Category")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -38,7 +38,7 @@ final class CategoryViewController: UIViewController {
     
     private lazy var placeholderTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Привычки и события можно\nобъединить по смыслу"
+        label.text = NSLocalizedString("habitsAndEvents", comment: "Habits and events can be combined by meaning")
         label.numberOfLines = 2
         label.textAlignment = .center
         label.textColor = .ypBlackDay
@@ -62,7 +62,7 @@ final class CategoryViewController: UIViewController {
     
     private lazy var addCategoryButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(NSLocalizedString("addCategory", comment: "Add category"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhiteDay, for: .normal)
         button.accessibilityIdentifier = "addCategoryButton"
@@ -139,7 +139,7 @@ final class CategoryViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.bottomAnchor.constraint(lessThanOrEqualTo: addCategoryButton.topAnchor,constant: -47),
+            tableView.bottomAnchor.constraint(lessThanOrEqualTo: addCategoryButton.topAnchor, constant: -47),
             
             placeholderImageView.heightAnchor.constraint(equalToConstant: 80),
             placeholderImageView.widthAnchor.constraint(equalToConstant: 80),

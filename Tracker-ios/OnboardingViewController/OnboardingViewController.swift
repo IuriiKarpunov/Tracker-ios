@@ -31,7 +31,7 @@ class OnboardingViewController: UIPageViewController {
     
     private lazy var blueLabel: UILabel = {
         let label = UILabel()
-        label.text = "Отслеживайте только то, что хотите"
+        label.text = NSLocalizedString("trackOnlyWhatYouWant", comment: "Track only what you want")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         label.numberOfLines = 2
@@ -43,7 +43,10 @@ class OnboardingViewController: UIPageViewController {
     
     private lazy var redLabel: UILabel = {
         let label = UILabel()
-        label.text = "Даже если это не литры воды и йога"
+        label.text = NSLocalizedString(
+            "evenIfIt'sNotLitersOfWaterAndYoga",
+            comment: "Even if it's not liters of water and yoga"
+        )
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         label.numberOfLines = 2
@@ -55,7 +58,10 @@ class OnboardingViewController: UIPageViewController {
     
     private lazy var button: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitle(
+            NSLocalizedString("thisIsTechnology", comment: "This is technology!"),
+            for: .normal
+        )
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhiteDay, for: .normal)
         button.layer.cornerRadius = 16
@@ -80,15 +86,15 @@ class OnboardingViewController: UIPageViewController {
         
         return pageControl
     }()
-
+    
     // MARK: - Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         dataSource = self
         delegate = self
-
+        
         addStartPage()
         addSubViews()
         applyConstraints()
@@ -143,7 +149,7 @@ class OnboardingViewController: UIPageViewController {
     }
 }
 
-    // MARK: - UIPageViewControllerDataSource
+// MARK: - UIPageViewControllerDataSource
 
 extension OnboardingViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
@@ -167,11 +173,11 @@ extension OnboardingViewController: UIPageViewControllerDataSource {
     }
 }
 
-    // MARK: - UIPageViewControllerDelegate
+// MARK: - UIPageViewControllerDelegate
 
 extension OnboardingViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-
+        
         if let currentViewController = pageViewController.viewControllers?.first,
            let currentIndex = onboardingPages.firstIndex(of: currentViewController) {
             pageControl.currentPage = currentIndex

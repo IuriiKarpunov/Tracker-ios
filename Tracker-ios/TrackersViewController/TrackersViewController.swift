@@ -49,8 +49,7 @@ final class TrackersViewController: UIViewController {
     private lazy var datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
-        picker.locale = Locale(identifier: "ru_Ru")
-        picker.calendar.firstWeekday = 2
+        picker.locale = Locale.current
         picker.preferredDatePickerStyle = .compact
         picker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
         picker.translatesAutoresizingMaskIntoConstraints = false
@@ -60,7 +59,7 @@ final class TrackersViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Трекеры"
+        label.text = NSLocalizedString("trackers", comment: "Trackers")
         label.textColor = .ypBlackDay
         label.font = UIFont.boldSystemFont(ofSize: 34)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -71,7 +70,7 @@ final class TrackersViewController: UIViewController {
     
     private lazy var searchTextField: UISearchTextField = {
         let search = UISearchTextField()
-        search.placeholder = "Поиск"
+        search.placeholder = NSLocalizedString("search", comment: "Search")
         search.borderStyle = .roundedRect
         search.autocorrectionType = .no
         search.autocapitalizationType = .none
@@ -91,7 +90,7 @@ final class TrackersViewController: UIViewController {
     
     private lazy var placeholderTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Что будем отслеживать?"
+        label.text = NSLocalizedString("whatWillWeTrack", comment: "What will we track?")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false

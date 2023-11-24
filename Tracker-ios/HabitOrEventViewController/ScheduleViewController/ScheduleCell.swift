@@ -41,7 +41,7 @@ final class ScheduleCell: UITableViewCell {
     
     func configureCell(weekDay: WeekDay) {
         currentWeekDay = weekDay
-        cellLabel.text = weekDay.rawValue
+        cellLabel.text = weekDay.fullName
         contentView.backgroundColor = .ypBackgroundDay
         addSubViews()
         applyConstraints()
