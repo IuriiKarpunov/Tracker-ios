@@ -10,7 +10,7 @@ import UIKit
 final class CategoryViewController: UIViewController {
     
     // MARK: - Stored properties
-    
+    var selectedCategoryName: String?
     weak var delegate: CategoryViewControllerDelegate?
     private var trackerCategoryStore = TrackerCategoryStore.shared
     private var categories: [TrackerCategory] = []
@@ -180,7 +180,8 @@ extension CategoryViewController: UITableViewDataSource {
         }
         
         let category = categoryViewModel.category(at: indexPath.row)
-        categoryCell.configureCell(category: category)
+        let isSelected = category == selectedCategoryName
+        categoryCell.configureCell(category: category, isSelected: isSelected)
         
         return categoryCell
     }

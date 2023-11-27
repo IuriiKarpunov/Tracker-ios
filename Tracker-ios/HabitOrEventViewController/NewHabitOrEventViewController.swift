@@ -269,7 +269,10 @@ final class NewHabitOrEventViewController: UIViewController {
     
     @objc
     private func didTapCategoryButton() {
+        let categoryName = headerCategoryLabel.text
         let categoryViewController = CategoryViewController()
+        
+        categoryViewController.selectedCategoryName = categoryName
         categoryViewController.delegate = self
         present(categoryViewController, animated: true)
     }
