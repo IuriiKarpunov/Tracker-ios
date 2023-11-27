@@ -129,7 +129,7 @@ final class TrackersViewController: UIViewController {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: TrackerHeaderCollectionViewCell.reuseIdentifier
         )
-        
+    
         addSubViews()
         applyConstraints()
         
@@ -195,7 +195,7 @@ final class TrackersViewController: UIViewController {
             searchTextField.trailingAnchor.constraint(equalTo: datePicker.trailingAnchor),
             
             collectionView.leadingAnchor.constraint(equalTo: searchTextField.leadingAnchor),
-            collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 10),
+            collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 18),
             collectionView.trailingAnchor.constraint(equalTo: searchTextField.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
@@ -266,6 +266,35 @@ final class TrackersViewController: UIViewController {
         let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
         return trackerRecord.trackerID  == id && isSameDay
     }
+    
+    private func showDeleteAlert(forItemAt indexPath: IndexPath) {
+        let alertController = UIAlertController(
+            title: "Уверены что хотите удалить трекер?",
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+
+        let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+            self?.handleDeleteTracker(at: indexPath)
+        }
+        let cancelAction = UIAlertAction(title: "Отменить", style: .cancel, handler: nil)
+
+        alertController.addAction(deleteAction)
+        alertController.addAction(cancelAction)
+
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    private func handleDeleteTracker(at indexPath: IndexPath) {
+            let trackerID = visibleCategories[indexPath.section].trackers[indexPath.row].id
+
+            do {
+                try TrackerStore.shared.deleteTracker(withID: trackerID)
+                reloadData()
+            } catch {
+                fatalError("Error deleting tracker: \(error)")
+            }
+        }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -308,6 +337,45 @@ extension TrackersViewController: UICollectionViewDelegate{
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return visibleCategories.count
     }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration
+    ) -> UITargetedPreview? {
+        guard let indexPath = configuration.identifier as? IndexPath,
+              let cell = collectionView.cellForItem(at: indexPath) as? TreckersCollectionViewCell
+        else {
+            return nil
+        }
+
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = .clear
+        return UITargetedPreview(view: cell.colorView, parameters: parameters)
+    }
+
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfigurationForItemAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(
+                identifier: indexPath as NSCopying,
+                previewProvider: nil,
+                actionProvider: { [weak self] _ -> UIMenu? in
+            return UIMenu(children: [
+                UIAction(title: "Закрепить") { [weak self] _ in
+                    // Действие при выборе "Закрепить"
+                },
+                UIAction(title: "Редактировать") { [weak self] _ in
+                    // Действие при выборе "Редактировать"
+                },
+                UIAction(title: "Удалить", attributes: [.destructive]) { [weak self] _ in
+                    self?.showDeleteAlert(forItemAt: indexPath)
+                },
+            ])
+        })
+    }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -349,7 +417,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 18)
+        return CGSize(width: collectionView.bounds.width, height: 46)
     }
 }
 

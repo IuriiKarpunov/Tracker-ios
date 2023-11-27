@@ -43,7 +43,7 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    private lazy var colorView: UIView = {
+     lazy var colorView: UIView = {
         let colorView = UIView()
         colorView.layer.cornerRadius = 16
         colorView.translatesAutoresizingMaskIntoConstraints = false
@@ -139,7 +139,7 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
             colorView.heightAnchor.constraint(equalToConstant: 90),
             colorView.widthAnchor.constraint(equalToConstant: 167),
             colorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            colorView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24),
+            colorView.topAnchor.constraint(equalTo: contentView.topAnchor),
             colorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
             emojiLabel.heightAnchor.constraint(equalToConstant: 24),

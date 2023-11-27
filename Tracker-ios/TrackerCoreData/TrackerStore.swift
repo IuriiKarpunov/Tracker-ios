@@ -84,4 +84,28 @@ final class TrackerStore {
             schedule: schedule
         )
     }
+    
+    func deleteTracker(withID trackerID: UUID) throws {
+        guard let trackerCoreData = try fetchTrackerCoreData(withID: trackerID) else {
+            return
+        }
+
+        context.delete(trackerCoreData)
+        try context.save()
+    }
+    
+    //MARK: - Private Methods
+    
+    private func fetchTrackerCoreData(withID trackerID: UUID) throws -> TrackerCoreData? {
+        let fetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", trackerID as CVarArg)
+
+        do {
+            let result = try context.fetch(fetchRequest)
+            return result.first
+        } catch {
+            throw error
+        }
+    }
+
 }

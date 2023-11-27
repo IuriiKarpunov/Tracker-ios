@@ -121,7 +121,7 @@ final class TrackerCategoryStore: NSObject {
     
     //MARK: - Private Methods
     
-    func trackerCategory(from trackerCategoryCorData: TrackerCategoryCoreData) throws -> TrackerCategory {
+    private func trackerCategory(from trackerCategoryCorData: TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let title = trackerCategoryCorData.title,
               let trackerCoreDataArray = trackerCategoryCorData.trackers?.allObjects as? [TrackerCoreData] else {
             throw TrackerCategoryStoreError.missingRequiredFields
