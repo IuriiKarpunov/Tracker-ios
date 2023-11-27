@@ -119,6 +119,20 @@ final class TrackerCategoryStore: NSObject {
         try context.save()
     }
     
+    func updateCategories() {
+        do {
+            try fetchedResultsController?.performFetch()
+            delegate?.store(self, didUpdate: TrackerCategoryStoreUpdate(
+                insertedIndexes: IndexSet(),
+                deletedIndexes: IndexSet(),
+                updatedIndexes: IndexSet(),
+                movedIndexes: Set<TrackerCategoryStoreUpdate.Move>()
+            ))
+        } catch {
+            print("Error updating categories from CoreData: \(error.localizedDescription)")
+        }
+    }
+    
     //MARK: - Private Methods
     
     private func trackerCategory(from trackerCategoryCorData: TrackerCategoryCoreData) throws -> TrackerCategory {

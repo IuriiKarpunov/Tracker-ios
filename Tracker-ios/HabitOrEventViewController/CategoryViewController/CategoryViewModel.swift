@@ -30,9 +30,11 @@ class CategoryViewModel {
     }
 
     func addCategory(_ category: TrackerCategory) {
-        if !categories.contains(where: { $0.title == category.title }) {
-            categories.append(category)
-            
+        do {
+            try trackerCategoryStore.addNewTrackerCategory(category)
+            fetchCategories()
+        } catch {
+            print("Error adding category to CoreData: \(error.localizedDescription)")
         }
     }
 }
