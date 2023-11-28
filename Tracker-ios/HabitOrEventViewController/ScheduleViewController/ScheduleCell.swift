@@ -39,10 +39,11 @@ final class ScheduleCell: UITableViewCell {
     
     // MARK: - Lifecycle
     
-    func configureCell(weekDay: WeekDay) {
+    func configureCell(weekDay: WeekDay, isSelected: Bool) {
         currentWeekDay = weekDay
         cellLabel.text = weekDay.fullName
         contentView.backgroundColor = .ypBackgroundDay
+        switcherView.isOn = isSelected
         addSubViews()
         applyConstraints()
     }

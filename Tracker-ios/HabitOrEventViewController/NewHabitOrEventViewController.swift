@@ -299,6 +299,7 @@ final class NewHabitOrEventViewController: UIViewController {
     @objc
     private func didTapScheduleButton() {
         let scheduleViewController = ScheduleViewController()
+        scheduleViewController.selectedSchedule = schedule
         scheduleViewController.delegate = self
         present(scheduleViewController, animated: true)
         textField.resignFirstResponder()

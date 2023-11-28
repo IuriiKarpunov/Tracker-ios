@@ -13,7 +13,7 @@ final class ScheduleViewController: UIViewController {
     
     private var schedule = [WeekDay]()
     weak var delegate: ScheduleViewControllerDelegate?
-    
+    var selectedSchedule = [WeekDay]()
     //MARK: - Layout variables
     
     private lazy var titleLabel: UILabel = {
@@ -63,6 +63,7 @@ final class ScheduleViewController: UIViewController {
         tableView.register(ScheduleCell.self, forCellReuseIdentifier: ScheduleCell.reuseIdentifier)
         addSubViews()
         applyConstraints()
+        schedule = selectedSchedule
     }
     
     // MARK: - IBAction
@@ -143,7 +144,9 @@ extension ScheduleViewController: UITableViewDataSource {
         if indexPath.row == WeekDay.allCases.count - 1 {
             scheduleCell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
         }
-        scheduleCell.configureCell(weekDay: WeekDay.allCases[indexPath.row])
+        let currentWeekDay = WeekDay.allCases[indexPath.row]
+        let isSelected = selectedSchedule.contains(currentWeekDay)
+        scheduleCell.configureCell(weekDay: WeekDay.allCases[indexPath.row], isSelected: isSelected)
         
         return scheduleCell
     }
