@@ -115,7 +115,7 @@ final class CreatingTrackerViewController: UIViewController {
 // MARK: - IBAction NewHabitOrEventViewControllerDelegate
 
 extension CreatingTrackerViewController: NewHabitOrEventViewControllerDelegate {
-    func createTrackers(tracker: Tracker, categoryName: String) {
+    func createTrackersHabit(tracker: Tracker, categoryName: String) {
         delegate?.createTrackers(tracker: tracker, categoryName: categoryName)
     }
 }

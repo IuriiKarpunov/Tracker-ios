@@ -77,7 +77,6 @@
 		4A29CED22B0508BB009F413C /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		4A29CEF62B07736E009F413C /* CategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewModel.swift; sourceTree = "<group>"; };
 		4A29CF6C2B0F8BAE009F413C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		4A29CF6F2B0F8C70009F413C /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		4A29CF702B0F8C8A009F413C /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4A29CF742B10BD0B009F413C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		4A29CF762B10BD11009F413C /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
@@ -271,7 +270,6 @@
 				4979FBB17F69BE4CBF0968C5 /* Pods-Tracker-ios.debug.xcconfig */,
 				B60595928D70AFC471442829 /* Pods-Tracker-ios.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -466,7 +464,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				4AC281E02AC967FC00D232B4 /* Base */,
-				4A29CF6F2B0F8C70009F413C /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

@@ -286,15 +286,15 @@ final class TrackersViewController: UIViewController {
     }
     
     private func handleDeleteTracker(at indexPath: IndexPath) {
-            let trackerID = visibleCategories[indexPath.section].trackers[indexPath.row].id
-
-            do {
-                try TrackerStore.shared.deleteTracker(withID: trackerID)
-                reloadData()
-            } catch {
-                fatalError("Error deleting tracker: \(error)")
-            }
+        let trackerID = visibleCategories[indexPath.section].trackers[indexPath.row].id
+        
+        do {
+            try TrackerStore.shared.deleteTracker(withID: trackerID)
+            reloadData()
+        } catch {
+            fatalError("Error deleting tracker: \(error)")
         }
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -368,7 +368,16 @@ extension TrackersViewController: UICollectionViewDelegate{
                     // Действие при выборе "Закрепить"
                 },
                 UIAction(title: "Редактировать") { [weak self] _ in
-                    // Действие при выборе "Редактировать"
+                    guard let self = self else { return }
+                    let trackerID = self.visibleCategories[indexPath.section].trackers[indexPath.row].id
+                    let categorie = visibleCategories[indexPath.section].title
+                    let newHabitOrEventViewController = NewHabitOrEventViewController(habitOrEvent: .edit)
+                    
+                    newHabitOrEventViewController.delegate = self
+                    newHabitOrEventViewController.daysCount = getComletedCount(id: trackerID)
+                    newHabitOrEventViewController.trackerID = trackerID
+                    newHabitOrEventViewController.editCategorie = categorie
+                    self.present(newHabitOrEventViewController, animated: true)
                 },
                 UIAction(title: "Удалить", attributes: [.destructive]) { [weak self] _ in
                     self?.showDeleteAlert(forItemAt: indexPath)
@@ -436,28 +445,36 @@ extension TrackersViewController: UITextFieldDelegate {
     }
 }
 
-// MARK: - CreatingTrackerViewControllerDelegate
+// MARK: - CreatingTrackerViewControllerDelegate & NewHabitOrEventViewControllerDelegate
 
-extension TrackersViewController: CreatingTrackerViewControllerDelegate {
+extension TrackersViewController: CreatingTrackerViewControllerDelegate, NewHabitOrEventViewControllerDelegate {
     func createTrackers(tracker: Tracker, categoryName: String) {
+        createOrUpdateTrackers(tracker: tracker, categoryName: categoryName)
+    }
+
+    func createTrackersHabit(tracker: Tracker, categoryName: String) {
+        createOrUpdateTrackers(tracker: tracker, categoryName: categoryName)
+    }
+
+    private func createOrUpdateTrackers(tracker: Tracker, categoryName: String) {
         guard let index = categories.firstIndex(where: { $0.title == categoryName }) else {
             let newCategory = TrackerCategory(title: categoryName, trackers: [tracker])
             do {
                 try trackerCategoryStore.addNewTrackerCategory(newCategory)
             } catch {
-                fatalError("Error creating new category: \(error)")
+                print("Error creating new category: \(error)")
             }
             collectionView.reloadData()
             return
         }
-        
+
         let updatedCategory = categories[index]
         do {
             try trackerCategoryStore.addTracker(tracker, to: updatedCategory)
         } catch {
-            fatalError("Error adding tracker to existing category: \(error)")
+            print("Error adding tracker to existing category: \(error)")
         }
-        
+
         collectionView.reloadData()
     }
 }

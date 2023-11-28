@@ -8,6 +8,10 @@
 
 import UIKit
 
+enum MyError: Error {
+    case trackerIDIsNil
+}
+
 final class NewHabitOrEventViewController: UIViewController {
     
     weak var delegate: NewHabitOrEventViewControllerDelegate?
@@ -15,6 +19,7 @@ final class NewHabitOrEventViewController: UIViewController {
     enum HabitOrEvent {
         case habit
         case event
+        case edit
     }
     
     var habitOrEvent: HabitOrEvent
@@ -36,6 +41,11 @@ final class NewHabitOrEventViewController: UIViewController {
     private var selectedColor: UIColor?
     private var category: TrackerCategory?
     private var schedule = [WeekDay]()
+    private var textFieldTopAnchorConstant: Int?
+    var trackerID: UUID?
+    var daysCount: Int?
+    var editCategorie: String?
+    
     
     // MARK: - Private Constants
     
@@ -64,6 +74,15 @@ final class NewHabitOrEventViewController: UIViewController {
         let label = UILabel()
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    private lazy var daysCountLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypBlackDay
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
@@ -292,26 +311,26 @@ final class NewHabitOrEventViewController: UIViewController {
     
     @objc
     private func didTapCreateButton() {
-        let newSchedule: [WeekDay]
+        let categoryName = headerCategoryLabel.text ?? NSLocalizedString("newCategory", comment: "New category")
+        let newSchedule: [WeekDay] = habitOrEvent == .habit || habitOrEvent == .edit ? schedule : WeekDay.allCases
+        var newTrackerID: UUID
         
-        if habitOrEvent == .habit {
-            newSchedule = schedule
+        if habitOrEvent == .edit, let id = trackerID {
+            newTrackerID = id
+            try? TrackerStore.shared.deleteTracker(withID: id)
         } else {
-            newSchedule = WeekDay.allCases
+            newTrackerID = UUID()
         }
         
         let newTracker = Tracker(
-            id: UUID(),
+            id: newTrackerID,
             name: textField.text ?? NSLocalizedString("untitled", comment: "Untitled"),
             color: selectedColor ?? .ypColorSelection1,
             emoji: selectedEmoji ?? "",
             schedule: newSchedule
         )
-        delegate?.createTrackers(
-            tracker: newTracker,
-            categoryName: headerCategoryLabel.text ?? NSLocalizedString("newCategory", comment: "New category")
-        )
-        
+        delegate?.createTrackersHabit(tracker: newTracker, categoryName: categoryName)
+
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid Configuration")
             return
@@ -324,6 +343,7 @@ final class NewHabitOrEventViewController: UIViewController {
     private func addSubViews() {
         view.addSubview(newHabitTitleLabel)
         view.addSubview(scrollView)
+        scrollView.addSubview(daysCountLabel)
         scrollView.addSubview(textField)
         scrollView.addSubview(errorTitleLabel)
         scrollView.addSubview(categoryButton)
@@ -334,7 +354,7 @@ final class NewHabitOrEventViewController: UIViewController {
         scrollView.addSubview(cancelButton)
         scrollView.addSubview(createButton)
         
-        if habitOrEvent == .habit {
+        if habitOrEvent == .habit || habitOrEvent == .edit {
             scrollView.addSubview(scheduleButton)
             scheduleButton.addSubview(scheduleImageView)
             scheduleButton.addSubview(headerScheduleLabel)
@@ -342,14 +362,33 @@ final class NewHabitOrEventViewController: UIViewController {
         }
     }
     
+    private func getLocalizedDaysString(daysCount: Int) -> String {
+        let localizedFormat = NSLocalizedString("daysString", comment: "")
+        return String.localizedStringWithFormat(localizedFormat, daysCount)
+    }
+    
     private func creatHabitOrEvent() {
         switch habitOrEvent {
+        case .edit:
+            newHabitTitleLabel.text = NSLocalizedString("editingHabit", comment: "Editing a habit")
+            createButton.setTitle(NSLocalizedString("save", comment: "Save"), for: .normal)
+            textFieldTopAnchorConstant = 40
+            categoryButton.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            daysCountLabel.text = getLocalizedDaysString(daysCount: daysCount ?? 0)
+            eventTracker(trackerID: trackerID)
+            headerCategoryUpdate()
+            headerScheduleUpdate()
+            break
         case .habit:
             newHabitTitleLabel.text = NSLocalizedString("newHabit", comment: "New habit")
+            createButton.setTitle(NSLocalizedString("create", comment: "Create"), for: .normal)
+            textFieldTopAnchorConstant = 0
             categoryButton.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             break
         case .event:
             newHabitTitleLabel.text = NSLocalizedString("newIrregularEvent", comment: "New irregular event")
+            textFieldTopAnchorConstant = 0
+            createButton.setTitle(NSLocalizedString("create", comment: "Create"), for: .normal)
             break
         }
     }
@@ -390,9 +429,12 @@ final class NewHabitOrEventViewController: UIViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
+            daysCountLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            daysCountLabel.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            
             textField.heightAnchor.constraint(equalToConstant: 75),
             textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            textField.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            textField.topAnchor.constraint(equalTo: daysCountLabel.bottomAnchor, constant: CGFloat(textFieldTopAnchorConstant ?? 0)),
             textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
             errorTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -420,7 +462,7 @@ final class NewHabitOrEventViewController: UIViewController {
             createButton.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
         ])
         
-        if habitOrEvent == .habit {
+        if habitOrEvent == .habit || habitOrEvent == .edit {
             NSLayoutConstraint.activate([
                 scheduleButton.heightAnchor.constraint(equalToConstant: 75),
                 scheduleButton.leadingAnchor.constraint(equalTo: categoryButton.leadingAnchor),
@@ -476,6 +518,40 @@ final class NewHabitOrEventViewController: UIViewController {
         createButton.isEnabled = isValidSchedule && isValidText && isValidCategory && isEmoji && isColor
         createButton.backgroundColor = createButton.isEnabled ? .ypBlackDay : .ypGrey
     }
+    
+    private func eventTracker(trackerID: UUID?) {
+        do {
+            guard let tracker = try trackerStore.fetchTrackerCoreData(withID: trackerID) else {
+                fatalError("Трекер с ID \(String(describing: trackerID)) не найден")
+            }
+
+            textField.text = tracker.name
+            headerCategoryLabel.text = editCategorie
+
+            guard let trackerColorString = tracker.color,
+                  let trackerColor = UIColor(hexStringRepresentation: trackerColorString) else {
+                fatalError("Ошибка при получении данных о цвете трекера")
+            }
+
+            selectedColor = trackerColor
+            if let index = color.firstIndex(where: { $0.hexString == selectedColor?.hexString }) {
+                selectedColorIndex = index
+            }
+
+            selectedEmoji = tracker.emoji
+            selectedEmojiIndex = emoji.firstIndex(of: selectedEmoji ?? "")
+
+            if let scheduleString = tracker.schedule as? String {
+                let scheduleComponents = scheduleString.components(separatedBy: ",")
+                self.schedule = scheduleComponents.compactMap { WeekDay(rawValue: $0) }
+
+                let shortSchedule = schedule.map { $0.shortName }.joined(separator: ", ")
+                headerScheduleLabel.text = shortSchedule
+            }
+        } catch {
+            fatalError("Ошибка при получении данных трекера: \(error.localizedDescription)")
+        }
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -489,7 +565,6 @@ extension NewHabitOrEventViewController: UICollectionViewDataSource {
         }
         return 0
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == emojiCollectionView {
