@@ -96,7 +96,6 @@ final class TrackerStore {
     
     func fetchTrackerCoreData(withID trackerID: UUID?) throws -> TrackerCoreData? {
         guard let id = trackerID else {
-            print("trackerID is nil")
             return nil
         }
         
@@ -104,8 +103,7 @@ final class TrackerStore {
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         
         do {
-            let result = try context.fetch(fetchRequest)
-            return result.first
+            return try context.fetch(fetchRequest).first
         } catch {
             throw error
         }

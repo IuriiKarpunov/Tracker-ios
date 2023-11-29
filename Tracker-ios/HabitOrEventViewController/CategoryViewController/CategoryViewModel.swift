@@ -37,4 +37,8 @@ class CategoryViewModel {
             print("Error adding category to CoreData: \(error.localizedDescription)")
         }
     }
+    
+    func categoryExists(with title: String) -> Bool {
+        return categories.contains(where: { $0.title == title })
+    }
 }

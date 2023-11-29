@@ -20,7 +20,7 @@ final class TrackersViewController: UIViewController {
     
     private let trackerCategoryStore = TrackerCategoryStore.shared
     private let trackerRecordStore = TrackerRecordStore.shared
-    
+    private let trackerStore = TrackerStore.shared
     
     //MARK: - Layout variables
     
@@ -289,7 +289,8 @@ final class TrackersViewController: UIViewController {
         let trackerID = visibleCategories[indexPath.section].trackers[indexPath.row].id
         
         do {
-            try TrackerStore.shared.deleteTracker(withID: trackerID)
+            try trackerStore.deleteTracker(withID: trackerID)
+            try trackerRecordStore.deleteTrackerRecordAll(withID: trackerID)
             reloadData()
         } catch {
             fatalError("Error deleting tracker: \(error)")
@@ -455,27 +456,20 @@ extension TrackersViewController: CreatingTrackerViewControllerDelegate, NewHabi
     func createTrackersHabit(tracker: Tracker, categoryName: String) {
         createOrUpdateTrackers(tracker: tracker, categoryName: categoryName)
     }
-
+    
     private func createOrUpdateTrackers(tracker: Tracker, categoryName: String) {
+        reloadData()
         guard let index = categories.firstIndex(where: { $0.title == categoryName }) else {
-            let newCategory = TrackerCategory(title: categoryName, trackers: [tracker])
-            do {
-                try trackerCategoryStore.addNewTrackerCategory(newCategory)
-            } catch {
-                print("Error creating new category: \(error)")
-            }
-            collectionView.reloadData()
             return
         }
-
+        
         let updatedCategory = categories[index]
         do {
             try trackerCategoryStore.addTracker(tracker, to: updatedCategory)
+            collectionView.reloadData()
         } catch {
             print("Error adding tracker to existing category: \(error)")
         }
-
-        collectionView.reloadData()
     }
 }
 

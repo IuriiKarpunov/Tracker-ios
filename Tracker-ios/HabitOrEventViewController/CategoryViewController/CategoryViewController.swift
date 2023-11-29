@@ -210,11 +210,15 @@ extension CategoryViewController: UITableViewDelegate {
 
 extension CategoryViewController: NewCategoryViewControllerDelegate {
     func addNewCategories(category: TrackerCategory) {
-        categoryViewModel.addCategory(category)
-        categories = categoryViewModel.categories
-        tableView.reloadData()
-        turnOnViews()
-        
-        tableViewHeightConstraint?.constant = calculateTableViewHeight()
+        if !categoryViewModel.categoryExists(with: category.title) {
+            categoryViewModel.addCategory(category)
+            categories = categoryViewModel.categories
+            tableView.reloadData()
+            turnOnViews()
+            
+            tableViewHeightConstraint?.constant = calculateTableViewHeight()
+        } else {
+            print("Category with title '\(category.title)' already exists.")
+        }
     }
 }
