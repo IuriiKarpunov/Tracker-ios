@@ -188,6 +188,7 @@ extension CategoryViewController: UITableViewDataSource {
 }
 
 //MARK: - UITableViewDelegate
+
 extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else {

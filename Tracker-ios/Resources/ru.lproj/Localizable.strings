@@ -62,3 +62,9 @@
 
 "editingHabit" = "Редактирование привычки";
 "save" = "Сохранить";
+"filters" = "Фильтры";
+
+"allTrackers" = "Все трекеры";
+"todayTrackers" = "Трекеры на сегодня";
+"completedTrackers" = "Завершенные";
+"unCompletedTrackers" = "Не завершенны";

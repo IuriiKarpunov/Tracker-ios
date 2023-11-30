@@ -96,6 +96,7 @@ final class TrackerCategoryStore: NSObject {
             trackerCoreData.name = tracker.name
             trackerCoreData.color = tracker.color.hexString
             trackerCoreData.emoji = tracker.emoji
+            trackerCoreData.isPinned = tracker.isPinned
             trackerCoreData.schedule = tracker.schedule.compactMap { $0.rawValue }.joined(separator: ",") as NSObject
             
             trackerCategoryCoreData.addToTrackers(trackerCoreData)
@@ -113,6 +114,7 @@ final class TrackerCategoryStore: NSObject {
         trackerCoreData.name = tracker.name
         trackerCoreData.color = tracker.color.hexString
         trackerCoreData.emoji = tracker.emoji
+        trackerCoreData.isPinned = tracker.isPinned
         trackerCoreData.schedule = tracker.schedule.compactMap { $0.rawValue }.joined(separator: ",") as NSObject
         
         category?.addToTrackers(trackerCoreData)

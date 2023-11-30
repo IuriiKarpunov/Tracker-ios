@@ -146,7 +146,7 @@ extension ScheduleViewController: UITableViewDataSource {
         }
         let currentWeekDay = WeekDay.allCases[indexPath.row]
         let isSelected = selectedSchedule.contains(currentWeekDay)
-        scheduleCell.configureCell(weekDay: WeekDay.allCases[indexPath.row], isSelected: isSelected)
+        scheduleCell.configureCell(weekDay: currentWeekDay, isSelected: isSelected)
         
         return scheduleCell
     }

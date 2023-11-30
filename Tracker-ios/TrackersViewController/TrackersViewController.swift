@@ -15,6 +15,7 @@ final class TrackersViewController: UIViewController {
     var completedTrackers: [TrackerRecord] = []
     var visibleCategories: [TrackerCategory] = []
     var currentDate: Date?
+    private var currentFilter: Filters? = .allTrackers
     
     // MARK: - Private Constants
     
@@ -111,9 +112,26 @@ final class TrackersViewController: UIViewController {
             forCellWithReuseIdentifier: TreckersCollectionViewCell.reuseIdentifier
         )
         collectionView.backgroundColor = .clear
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 66, right: 0)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
+    }()
+    
+    private lazy var filtersButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle(NSLocalizedString("filters", comment: "Filters"), for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        button.layer.cornerRadius = 16
+        button.addTarget(
+            self,
+            action: #selector(didTapFiltersButton),
+            for: .touchUpInside
+        )
+        button.backgroundColor = .ypBlue
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
     }()
     
     // MARK: - Lifecycle
@@ -154,7 +172,20 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func dateChanged() {
+        if currentFilter == .todayTrackers,
+           !Calendar.current.isDate(datePicker.date, inSameDayAs: Date()) {
+            currentFilter = .allTrackers
+            filtersButton.setTitleColor(.white, for: .normal)
+        }
         reloadvisibleCategories(text: searchTextField.text, date: datePicker.date)
+    }
+    
+    @objc
+    private func didTapFiltersButton() {
+        let filtersViewController = FiltersViewController()
+        filtersViewController.delegate = self
+        filtersViewController.selectedFilters = currentFilter
+        present(filtersViewController, animated: true)
     }
     
     // MARK: - Private Methods
@@ -168,6 +199,7 @@ final class TrackersViewController: UIViewController {
         view.addSubview(collectionView)
         view.addSubview(placeholderImageView)
         view.addSubview(placeholderTitleLabel)
+        view.addSubview(filtersButton)
     }
     
     private func applyConstraints() {
@@ -198,6 +230,11 @@ final class TrackersViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 18),
             collectionView.trailingAnchor.constraint(equalTo: searchTextField.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            filtersButton.heightAnchor.constraint(equalToConstant: 50),
+            filtersButton.widthAnchor.constraint(equalToConstant: 114),
+            filtersButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filtersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             
             placeholderImageView.heightAnchor.constraint(equalToConstant: 80),
             placeholderImageView.widthAnchor.constraint(equalToConstant: 80),
@@ -258,8 +295,21 @@ final class TrackersViewController: UIViewController {
                 let dateCondition = tracker.schedule.contains { weekDay in
                     weekDay.numberOfDay == filterWeekday
                 } == true
+                
+                let isCompletedTracker = completedTrackers.contains { trackerRecord in
+                    trackerRecord.trackerID == tracker.id &&
+                    calendar.isDate(trackerRecord.date, inSameDayAs: date)
+                }
+
+                if currentFilter == .completedTrackers {
+                    return textCondition && dateCondition && isCompletedTracker
+                } else if currentFilter == .unCompletedTrackers {
+                    return textCondition && dateCondition && !isCompletedTracker
+                }
+                
                 return textCondition && dateCondition
             }
+            
             if trackers.isEmpty {
                 return nil
             }
@@ -277,9 +327,11 @@ final class TrackersViewController: UIViewController {
         if visibleCategories.count == 0 {
             placeholderImageView.isHidden = false
             placeholderTitleLabel.isHidden = false
+            filtersButton.isHidden = currentFilter == .allTrackers
         } else {
             placeholderImageView.isHidden = true
             placeholderTitleLabel.isHidden = true
+            filtersButton.isHidden = false
         }
     }
     
@@ -316,6 +368,24 @@ final class TrackersViewController: UIViewController {
         } catch {
             fatalError("Error deleting tracker: \(error)")
         }
+    }
+    
+    private func applyFilter(_ filter: Filters) {
+        currentFilter = filter
+        
+        if currentFilter != .allTrackers {
+                filtersButton.setTitleColor(.ypRed, for: .normal)
+            } else {
+                filtersButton.setTitleColor(.white, for: .normal)
+            }
+        
+        switch filter {
+        case .todayTrackers:
+            datePicker.date = Date()
+        default:
+            break
+        }
+        dateChanged()
     }
 }
 
@@ -530,5 +600,13 @@ extension TrackersViewController: TreckersCollectionViewCellDelegate {
         }
         try? trackerRecordStore.deleteTrackerRecord(TrackerRecord(trackerID: id, date: datePicker.date))
         collectionView.reloadItems(at: [indexPath])
+    }
+}
+
+// MARK: - FiltersViewControllerDelegate
+
+extension TrackersViewController: FiltersViewControllerDelegate {
+    func filtersViewController(_ controller: FiltersViewController, didSelectFilter filter: Filters) {
+        applyFilter(filter)
     }
 }

@@ -59,3 +59,12 @@
 "fridayShort" = "Fri";
 "saturdayShort" = "Sat";
 "sundayShort" = "Sun";
+
+"editingHabit" = "Editing a habit";
+"save" = "Save";
+"filters" = "Filters";
+
+"allTrackers" = "All trackers";
+"todayTrackers" = "Trackers for today";
+"completedTrackers" = "Completed";
+"unCompletedTrackers" = "Not completed";

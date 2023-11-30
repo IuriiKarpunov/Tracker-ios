@@ -1,23 +1,15 @@
 //
-//  CategoryCell.swift
+//  FiltersCell.swift
 //  Tracker-ios
 //
-//  Created by Iurii on 19.10.23.
+//  Created by Iurii on 30.11.23.
 //
 
 import UIKit
 
-final class CategoryCell: UITableViewCell {
+final class FiltersCell: UITableViewCell {
     
-    // MARK: - Stored properties
-    
-    static let reuseIdentifier = "CategoryCell"
-    
-    var isSelectedCategory: Bool = false {
-            didSet {
-                propertyImageView.isHidden = !isSelectedCategory
-            }
-        }
+    static let reuseIdentifier = "FiltersCell"
     
     //MARK: - Layout variables
     
@@ -40,13 +32,14 @@ final class CategoryCell: UITableViewCell {
     
     // MARK: - Lifecycle
     
-    func configureCell(category: String, isSelected: Bool) {
-        cellLabel.text = category
+    func configureCell(filter: Filters, isSelected: Bool) {
+        cellLabel.text = filter.fullName
+        propertyImageView.isHidden = !isSelected
         contentView.backgroundColor = .ypBackgroundDay
-        isSelectedCategory = isSelected
         addSubViews()
         applyConstraints()
     }
+    
     
     // MARK: - Private Methods
     
@@ -65,9 +58,5 @@ final class CategoryCell: UITableViewCell {
             propertyImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             propertyImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
         ])
-    }
-    
-    func togglePropertyImageViewVisibility() {
-        propertyImageView.isHidden = !propertyImageView.isHidden
     }
 }
