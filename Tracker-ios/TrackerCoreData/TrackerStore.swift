@@ -59,6 +59,7 @@ final class TrackerStore {
         trackerCoreData.color = tracker.color.hexString
         trackerCoreData.emoji = tracker.emoji
         trackerCoreData.name = tracker.name
+        trackerCoreData.isPinned = tracker.isPinned
         trackerCoreData.schedule = tracker.schedule.compactMap { $0.rawValue }.joined(separator: ",") as NSObject
         
         try context.save()
@@ -81,7 +82,8 @@ final class TrackerStore {
             name: name,
             color: color.color,
             emoji: emoji,
-            schedule: schedule
+            schedule: schedule,
+            isPinned: trackerCoreData.isPinned
         )
     }
     
@@ -91,6 +93,15 @@ final class TrackerStore {
         }
         
         context.delete(trackerCoreData)
+        try context.save()
+    }
+    
+    func toggleTrackerPinnedState(withID trackerID: UUID) throws {
+        guard let trackerCoreData = try fetchTrackerCoreData(withID: trackerID) else {
+            return
+        }
+        
+        trackerCoreData.isPinned.toggle()
         try context.save()
     }
     

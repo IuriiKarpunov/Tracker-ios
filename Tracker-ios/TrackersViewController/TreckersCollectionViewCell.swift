@@ -73,6 +73,14 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
+    private lazy var pinnedImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "Pinned.png"))
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.isHidden = false
+        
+        return imageView
+    }()
+    
     // MARK: - Lifecycle
     
     override init(frame: CGRect) {
@@ -87,11 +95,12 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Public Methods
     
-    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, daysCount: Int, selectedDate: Date) {
+    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, daysCount: Int, selectedDate: Date, isPinned: Bool) {
         nameLabel.text = tracker.name
         emojiLabel.text = tracker.emoji
         colorView.backgroundColor = tracker.color
         executeButton.backgroundColor = tracker.color
+        pinnedImageView.isHidden = !isPinned
         
         self.trackerID = tracker.id
         self.isCompletedToday = isCompletedToday
@@ -130,6 +139,7 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(colorView)
         colorView.addSubview(emojiLabel)
         colorView.addSubview(nameLabel)
+        colorView.addSubview(pinnedImageView)
         contentView.addSubview(daysLabel)
         contentView.addSubview(executeButton)
     }
@@ -150,6 +160,11 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
             nameLabel.leadingAnchor.constraint(equalTo: emojiLabel.leadingAnchor),
             nameLabel.bottomAnchor.constraint(equalTo: colorView.bottomAnchor, constant: -12),
             nameLabel.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -12),
+            
+            pinnedImageView.heightAnchor.constraint(equalToConstant: 24),
+            pinnedImageView.widthAnchor.constraint(equalToConstant: 24),
+            pinnedImageView.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 12),
+            pinnedImageView.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -4),
             
             daysLabel.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
             daysLabel.topAnchor.constraint(equalTo: colorView.bottomAnchor, constant: 16),

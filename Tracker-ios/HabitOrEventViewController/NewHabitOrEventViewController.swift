@@ -328,7 +328,8 @@ final class NewHabitOrEventViewController: UIViewController {
             name: textField.text ?? NSLocalizedString("untitled", comment: "Untitled"),
             color: selectedColor ?? .ypColorSelection1,
             emoji: selectedEmoji ?? "",
-            schedule: newSchedule
+            schedule: newSchedule,
+            isPinned: false
         )
         delegate?.createTrackersHabit(tracker: newTracker, categoryName: categoryName)
 

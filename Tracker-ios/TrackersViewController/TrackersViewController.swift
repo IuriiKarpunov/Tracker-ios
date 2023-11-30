@@ -210,7 +210,28 @@ final class TrackersViewController: UIViewController {
     }
     
     private func reloadData() {
-        categories = trackerCategoryStore.trackerCategory
+        categories = []
+        var pinnedTrackers: [Tracker] = []
+
+        for category in trackerCategoryStore.trackerCategory {
+            let trackers = category.trackers
+
+            let pinnedTrackersForCategory = trackers.filter { $0.isPinned }
+            let unpinnedTrackers = trackers.filter { !$0.isPinned }
+
+            pinnedTrackers.append(contentsOf: pinnedTrackersForCategory)
+
+            if !unpinnedTrackers.isEmpty {
+                let unpinnedCategory = TrackerCategory(title: category.title, trackers: unpinnedTrackers)
+                categories.append(unpinnedCategory)
+            }
+        }
+
+        if !pinnedTrackers.isEmpty {
+            let pinnedCategory = TrackerCategory(title: "Закрепленные", trackers: pinnedTrackers)
+            categories.insert(pinnedCategory, at: 0)
+        }
+
         dateChanged()
     }
     
@@ -321,7 +342,8 @@ extension TrackersViewController: UICollectionViewDataSource {
             isCompletedToday: isCompletedToday,
             indexPath: indexPath,
             daysCount: getComletedCount(id: tracker.id),
-            selectedDate: datePicker.date
+            selectedDate: datePicker.date,
+            isPinned: tracker.isPinned
         )
         return cell
     }
@@ -361,30 +383,40 @@ extension TrackersViewController: UICollectionViewDelegate{
         point: CGPoint
     ) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(
-                identifier: indexPath as NSCopying,
-                previewProvider: nil,
-                actionProvider: { [weak self] _ -> UIMenu? in
-            return UIMenu(children: [
-                UIAction(title: "Закрепить") { [weak self] _ in
-                    // Действие при выборе "Закрепить"
-                },
-                UIAction(title: "Редактировать") { [weak self] _ in
-                    guard let self = self else { return }
-                    let trackerID = self.visibleCategories[indexPath.section].trackers[indexPath.row].id
-                    let categorie = visibleCategories[indexPath.section].title
-                    let newHabitOrEventViewController = NewHabitOrEventViewController(habitOrEvent: .edit)
-                    
-                    newHabitOrEventViewController.delegate = self
-                    newHabitOrEventViewController.daysCount = getComletedCount(id: trackerID)
-                    newHabitOrEventViewController.trackerID = trackerID
-                    newHabitOrEventViewController.editCategorie = categorie
-                    self.present(newHabitOrEventViewController, animated: true)
-                },
-                UIAction(title: "Удалить", attributes: [.destructive]) { [weak self] _ in
-                    self?.showDeleteAlert(forItemAt: indexPath)
-                },
-            ])
-        })
+            identifier: indexPath as NSCopying,
+            previewProvider: nil,
+            actionProvider: { [weak self] _ -> UIMenu? in
+                guard let self = self else { return nil }
+                
+                let tracker = self.visibleCategories[indexPath.section].trackers[indexPath.row]
+                return UIMenu(children: [
+                    UIAction(title: tracker.isPinned ? "Открепить" : "Закрепить") { [weak self] _ in
+                        guard let self = self else { return }
+                        let trackerID = tracker.id
+                        do {
+                            try self.trackerStore.toggleTrackerPinnedState(withID: trackerID)
+                            reloadData()
+                        } catch {
+                            print("Ошибка при изменении состояния isPinned: \(error.localizedDescription)")
+                        }
+                    },
+                    UIAction(title: "Редактировать") { [weak self] _ in
+                        guard let self = self else { return }
+                        let trackerID = tracker.id
+                        let categorie = visibleCategories[indexPath.section].title
+                        let newHabitOrEventViewController = NewHabitOrEventViewController(habitOrEvent: .edit)
+                        
+                        newHabitOrEventViewController.delegate = self
+                        newHabitOrEventViewController.daysCount = getComletedCount(id: trackerID)
+                        newHabitOrEventViewController.trackerID = trackerID
+                        newHabitOrEventViewController.editCategorie = categorie
+                        self.present(newHabitOrEventViewController, animated: true)
+                    },
+                    UIAction(title: "Удалить", attributes: [.destructive]) { [weak self] _ in
+                        self?.showDeleteAlert(forItemAt: indexPath)
+                    },
+                ])
+            })
     }
 }
 
@@ -458,7 +490,8 @@ extension TrackersViewController: CreatingTrackerViewControllerDelegate, NewHabi
     }
     
     private func createOrUpdateTrackers(tracker: Tracker, categoryName: String) {
-        reloadData()
+        categories = trackerCategoryStore.trackerCategory
+        dateChanged()
         guard let index = categories.firstIndex(where: { $0.title == categoryName }) else {
             return
         }
