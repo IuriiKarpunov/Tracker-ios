@@ -147,7 +147,7 @@ final class TrackersViewController: UIViewController {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: TrackerHeaderCollectionViewCell.reuseIdentifier
         )
-    
+        
         addSubViews()
         applyConstraints()
         
@@ -226,9 +226,9 @@ final class TrackersViewController: UIViewController {
             searchTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 7),
             searchTextField.trailingAnchor.constraint(equalTo: datePicker.trailingAnchor),
             
-            collectionView.leadingAnchor.constraint(equalTo: searchTextField.leadingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 18),
-            collectionView.trailingAnchor.constraint(equalTo: searchTextField.trailingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             filtersButton.heightAnchor.constraint(equalToConstant: 50),
@@ -249,26 +249,26 @@ final class TrackersViewController: UIViewController {
     private func reloadData() {
         categories = []
         var pinnedTrackers: [Tracker] = []
-
+        
         for category in trackerCategoryStore.trackerCategory {
             let trackers = category.trackers
-
+            
             let pinnedTrackersForCategory = trackers.filter { $0.isPinned }
             let unpinnedTrackers = trackers.filter { !$0.isPinned }
-
+            
             pinnedTrackers.append(contentsOf: pinnedTrackersForCategory)
-
+            
             if !unpinnedTrackers.isEmpty {
                 let unpinnedCategory = TrackerCategory(title: category.title, trackers: unpinnedTrackers)
                 categories.append(unpinnedCategory)
             }
         }
-
+        
         if !pinnedTrackers.isEmpty {
             let pinnedCategory = TrackerCategory(title: NSLocalizedString("pinned", comment: ""), trackers: pinnedTrackers)
             categories.insert(pinnedCategory, at: 0)
         }
-
+        
         dateChanged()
     }
     
@@ -300,7 +300,7 @@ final class TrackersViewController: UIViewController {
                     trackerRecord.trackerID == tracker.id &&
                     calendar.isDate(trackerRecord.date, inSameDayAs: date)
                 }
-
+                
                 if currentFilter == .completedTrackers {
                     return textCondition && dateCondition && isCompletedTracker
                 } else if currentFilter == .unCompletedTrackers {
@@ -342,19 +342,22 @@ final class TrackersViewController: UIViewController {
     
     private func showDeleteAlert(forItemAt indexPath: IndexPath) {
         let alertController = UIAlertController(
-            title: "Уверены что хотите удалить трекер?",
+            title: NSLocalizedString("deletionIssue", comment: ""),
             message: nil,
             preferredStyle: .actionSheet
         )
-
-        let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+        
+        let deleteAction = UIAlertAction(
+            title: NSLocalizedString("delete", comment: ""),
+            style: .destructive
+        ) { [weak self] _ in
             self?.handleDeleteTracker(at: indexPath)
         }
-        let cancelAction = UIAlertAction(title: "Отменить", style: .cancel, handler: nil)
-
+        let cancelAction = UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: .cancel, handler: nil)
+        
         alertController.addAction(deleteAction)
         alertController.addAction(cancelAction)
-
+        
         self.present(alertController, animated: true, completion: nil)
     }
     
@@ -374,10 +377,10 @@ final class TrackersViewController: UIViewController {
         currentFilter = filter
         
         if currentFilter != .allTrackers {
-                filtersButton.setTitleColor(.ypRed, for: .normal)
-            } else {
-                filtersButton.setTitleColor(.white, for: .normal)
-            }
+            filtersButton.setTitleColor(.ypRed, for: .normal)
+        } else {
+            filtersButton.setTitleColor(.white, for: .normal)
+        }
         
         switch filter {
         case .todayTrackers:
@@ -440,12 +443,12 @@ extension TrackersViewController: UICollectionViewDelegate{
         else {
             return nil
         }
-
+        
         let parameters = UIPreviewParameters()
         parameters.backgroundColor = .clear
         return UITargetedPreview(view: cell.colorView, parameters: parameters)
     }
-
+    
     
     func collectionView(
         _ collectionView: UICollectionView,
@@ -497,19 +500,18 @@ extension TrackersViewController: UICollectionViewDelegate{
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        return CGSize(width: (collectionView.bounds.width / 2) - 4.5, height: 148)
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let leftIndent: CGFloat = 16
+        let rightIndent: CGFloat = 4.5
+        let widthCell = (collectionView.bounds.width / 2) - leftIndent - rightIndent
+        return CGSize(width: widthCell, height: 148)
     }
     
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        minimumInteritemSpacingForSectionAt section: Int
-    ) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+    }
+    
+    func collectionView( _ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 9
     }
     
@@ -558,7 +560,7 @@ extension TrackersViewController: CreatingTrackerViewControllerDelegate, NewHabi
     func createTrackers(tracker: Tracker, categoryName: String) {
         createOrUpdateTrackers(tracker: tracker, categoryName: categoryName)
     }
-
+    
     func createTrackersHabit(tracker: Tracker, categoryName: String) {
         createOrUpdateTrackers(tracker: tracker, categoryName: categoryName)
     }

@@ -75,3 +75,4 @@
 "pin" = "Pin";
 "edit" = "Edit";
 "delete" = "Delete";
+"deletionIssue" = "Are you sure you want to delete the tracker?";

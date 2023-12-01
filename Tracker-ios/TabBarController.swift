@@ -20,7 +20,6 @@ final class TabBarController: UITabBarController {
         view.backgroundColor = .white
         
         let statisticsViewController = StatisticsViewController()
-        statisticsViewController.viewDidLoad()
         statisticsViewController.tabBarItem = UITabBarItem(
             title: NSLocalizedString("statistics", comment: "Statistics"),
             image: UIImage(named: "TabBarStats"),
