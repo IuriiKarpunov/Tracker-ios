@@ -68,3 +68,10 @@
 "todayTrackers" = "Trackers for today";
 "completedTrackers" = "Completed";
 "unCompletedTrackers" = "Not completed";
+"trackersCompleted" = "Trackers completed";
+
+"pinned" = "Pinned";
+"unpin" = "Unpin";
+"pin" = "Pin";
+"edit" = "Edit";
+"delete" = "Delete";

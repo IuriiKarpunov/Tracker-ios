@@ -265,7 +265,7 @@ final class TrackersViewController: UIViewController {
         }
 
         if !pinnedTrackers.isEmpty {
-            let pinnedCategory = TrackerCategory(title: "Закрепленные", trackers: pinnedTrackers)
+            let pinnedCategory = TrackerCategory(title: NSLocalizedString("pinned", comment: ""), trackers: pinnedTrackers)
             categories.insert(pinnedCategory, at: 0)
         }
 
@@ -459,8 +459,12 @@ extension TrackersViewController: UICollectionViewDelegate{
                 guard let self = self else { return nil }
                 
                 let tracker = self.visibleCategories[indexPath.section].trackers[indexPath.row]
+                let unpinString = NSLocalizedString("unpin", comment: "")
+                let pinString = NSLocalizedString("pin", comment: "")
+                let editString = NSLocalizedString("edit", comment: "")
+                let deleteString = NSLocalizedString("delete", comment: "")
                 return UIMenu(children: [
-                    UIAction(title: tracker.isPinned ? "Открепить" : "Закрепить") { [weak self] _ in
+                    UIAction(title: tracker.isPinned ? unpinString : pinString) { [weak self] _ in
                         guard let self = self else { return }
                         let trackerID = tracker.id
                         do {
@@ -470,7 +474,7 @@ extension TrackersViewController: UICollectionViewDelegate{
                             print("Ошибка при изменении состояния isPinned: \(error.localizedDescription)")
                         }
                     },
-                    UIAction(title: "Редактировать") { [weak self] _ in
+                    UIAction(title: editString) { [weak self] _ in
                         guard let self = self else { return }
                         let trackerID = tracker.id
                         let categorie = visibleCategories[indexPath.section].title
@@ -482,7 +486,7 @@ extension TrackersViewController: UICollectionViewDelegate{
                         newHabitOrEventViewController.editCategorie = categorie
                         self.present(newHabitOrEventViewController, animated: true)
                     },
-                    UIAction(title: "Удалить", attributes: [.destructive]) { [weak self] _ in
+                    UIAction(title: deleteString, attributes: [.destructive]) { [weak self] _ in
                         self?.showDeleteAlert(forItemAt: indexPath)
                     },
                 ])

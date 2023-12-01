@@ -68,3 +68,10 @@
 "todayTrackers" = "Трекеры на сегодня";
 "completedTrackers" = "Завершенные";
 "unCompletedTrackers" = "Не завершенны";
+"trackersCompleted" = "Трекеров завершено";
+
+"pinned" = "Закрепленные";
+"unpin" = "Открепить";
+"pin" = "Закрепить";
+"edit" = "Редактировать";
+"delete" = "Удалить";

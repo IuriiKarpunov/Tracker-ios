@@ -113,6 +113,17 @@ final class TrackerRecordStore: NSObject {
         return try trackerRecordFromCoreData.map { try self.trackerRecord(from: $0) }
     }
     
+    func countCompletedTrackers() throws -> Int {
+        do {
+            let trackerRecords = try fetchTrackersRecord()
+            let currentDate = Date()
+            let completedTrackersCount = trackerRecords.filter { $0.date <= currentDate }.count
+            return completedTrackersCount
+        } catch {
+            throw error
+        }
+    }
+    
     //MARK: - Private Methods
     
     func trackerRecord(from trackerRecordCoreData: TrackerRecordCoreData) throws -> TrackerRecord {

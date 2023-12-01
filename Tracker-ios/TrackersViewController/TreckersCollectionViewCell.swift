@@ -47,6 +47,7 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         let colorView = UIView()
         colorView.layer.cornerRadius = 16
         colorView.translatesAutoresizingMaskIntoConstraints = false
+         
         return colorView
     }()
     
