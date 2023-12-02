@@ -134,6 +134,7 @@ final class CategoryViewController: UIViewController {
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 22),
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 21),
             
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),

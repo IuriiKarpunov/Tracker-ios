@@ -30,6 +30,7 @@ final class ScheduleViewController: UIViewController {
         let tableView = UITableView()
         tableView.rowHeight = 75
         tableView.layer.cornerRadius = 16
+        tableView.backgroundColor = .ypBackgroundDay
         tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -86,6 +87,7 @@ final class ScheduleViewController: UIViewController {
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 22),
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 21),
             
             tableView.heightAnchor.constraint(equalToConstant: CGFloat(WeekDay.allCases.count * 75)),
