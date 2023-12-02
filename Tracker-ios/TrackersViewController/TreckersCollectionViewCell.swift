@@ -11,7 +11,10 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Stored Properties
     
+    
     static let reuseIdentifier = "TreckersCollectionViewCell"
+    private let analyticsService = AnalyticsService()
+    
     private var isCompletedToday: Bool = false
     private var trackerID: UUID?
     private var indexPath: IndexPath?
@@ -116,6 +119,8 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     
     @objc
     private func didTapPlusButton() {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "track"])
+        
         guard let trackerID = trackerID,
               let indexPath = indexPath,
               let selectedDate = selectedDate else {

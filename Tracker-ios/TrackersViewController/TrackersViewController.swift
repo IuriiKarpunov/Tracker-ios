@@ -22,6 +22,7 @@ final class TrackersViewController: UIViewController {
     private let trackerCategoryStore = TrackerCategoryStore.shared
     private let trackerRecordStore = TrackerRecordStore.shared
     private let trackerStore = TrackerStore.shared
+    private let analyticsService = AnalyticsService()
     
     //MARK: - Layout variables
     
@@ -161,10 +162,23 @@ final class TrackersViewController: UIViewController {
         self.hideKeyboardWhenTappedAround()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        analyticsService.report(event: "open", params: ["screen": "Main"])
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        analyticsService.report(event: "close", params: ["screen" : "Main"])
+    }
+    
     // MARK: - IBAction
     
     @objc
     private func didTapPlusButton() {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "add_track"])
+        
         let creatingTrackerViewController = CreatingTrackerViewController()
         creatingTrackerViewController.delegate = self
         present(creatingTrackerViewController, animated: true)
@@ -182,6 +196,8 @@ final class TrackersViewController: UIViewController {
     
     @objc
     private func didTapFiltersButton() {
+        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "filter"])
+        
         let filtersViewController = FiltersViewController()
         filtersViewController.delegate = self
         filtersViewController.selectedFilters = currentFilter
@@ -390,6 +406,28 @@ final class TrackersViewController: UIViewController {
         }
         dateChanged()
     }
+    
+    private func pinUnpinTracker(tracker: Tracker){
+        let trackerID = tracker.id
+        do {
+            try self.trackerStore.toggleTrackerPinnedState(withID: trackerID)
+            reloadData()
+        } catch {
+            print("Ошибка при изменении состояния isPinned: \(error.localizedDescription)")
+        }
+    }
+    
+    private func editTracker(tracker: Tracker, categorie: TrackerCategory) {
+        let trackerID = tracker.id
+        let categorieTitle = categorie.title
+        let newHabitOrEventViewController = NewHabitOrEventViewController(habitOrEvent: .edit)
+        
+        newHabitOrEventViewController.delegate = self
+        newHabitOrEventViewController.daysCount = getComletedCount(id: trackerID)
+        newHabitOrEventViewController.trackerID = trackerID
+        newHabitOrEventViewController.editCategorie = categorieTitle
+        self.present(newHabitOrEventViewController, animated: true)
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -429,6 +467,7 @@ extension TrackersViewController: UICollectionViewDataSource {
 }
 
 // MARK: - UICollectionViewDelegate
+
 extension TrackersViewController: UICollectionViewDelegate{
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return visibleCategories.count
@@ -461,36 +500,30 @@ extension TrackersViewController: UICollectionViewDelegate{
             actionProvider: { [weak self] _ -> UIMenu? in
                 guard let self = self else { return nil }
                 
+                let categorie = visibleCategories[indexPath.section]
                 let tracker = self.visibleCategories[indexPath.section].trackers[indexPath.row]
+                
                 let unpinString = NSLocalizedString("unpin", comment: "")
                 let pinString = NSLocalizedString("pin", comment: "")
                 let editString = NSLocalizedString("edit", comment: "")
                 let deleteString = NSLocalizedString("delete", comment: "")
+                
                 return UIMenu(children: [
                     UIAction(title: tracker.isPinned ? unpinString : pinString) { [weak self] _ in
                         guard let self = self else { return }
-                        let trackerID = tracker.id
-                        do {
-                            try self.trackerStore.toggleTrackerPinnedState(withID: trackerID)
-                            reloadData()
-                        } catch {
-                            print("Ошибка при изменении состояния isPinned: \(error.localizedDescription)")
-                        }
+                        pinUnpinTracker(tracker: tracker)
                     },
                     UIAction(title: editString) { [weak self] _ in
                         guard let self = self else { return }
-                        let trackerID = tracker.id
-                        let categorie = visibleCategories[indexPath.section].title
-                        let newHabitOrEventViewController = NewHabitOrEventViewController(habitOrEvent: .edit)
+                        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "edit"])
                         
-                        newHabitOrEventViewController.delegate = self
-                        newHabitOrEventViewController.daysCount = getComletedCount(id: trackerID)
-                        newHabitOrEventViewController.trackerID = trackerID
-                        newHabitOrEventViewController.editCategorie = categorie
-                        self.present(newHabitOrEventViewController, animated: true)
+                        editTracker(tracker: tracker, categorie: categorie)
                     },
                     UIAction(title: deleteString, attributes: [.destructive]) { [weak self] _ in
-                        self?.showDeleteAlert(forItemAt: indexPath)
+                        guard let self = self else { return }
+                        analyticsService.report(event: "click", params: ["screen" : "Main", "item" : "delete"])
+                        
+                        showDeleteAlert(forItemAt: indexPath)
                     },
                 ])
             })

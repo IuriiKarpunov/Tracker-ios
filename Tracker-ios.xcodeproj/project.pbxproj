@@ -38,6 +38,7 @@
 		4A6A90B72B1A5F2200A7F1CA /* Tracker_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6A90B62B1A5F2200A7F1CA /* Tracker_iosTests.swift */; };
 		4A6A90BF2B1A5FC100A7F1CA /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 4A6A90BE2B1A5FC100A7F1CA /* InlineSnapshotTesting */; };
 		4A6A90C12B1A5FC100A7F1CA /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 4A6A90C02B1A5FC100A7F1CA /* SnapshotTesting */; };
+		4A6A90C42B1A72D200A7F1CA /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6A90C32B1A72D200A7F1CA /* AnalyticsService.swift */; };
 		4A90AF9D2AFF964600A83B74 /* Keyboard+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A90AF9C2AFF964600A83B74 /* Keyboard+Extensions.swift */; };
 		4AA083342AD4589000D8D18D /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA083332AD4589000D8D18D /* StatisticsViewController.swift */; };
 		4AA083362AD458C300D8D18D /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA083352AD458C300D8D18D /* TabBarController.swift */; };
@@ -103,6 +104,7 @@
 		4A6A90AE2B19090F00A7F1CA /* Filters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filters.swift; sourceTree = "<group>"; };
 		4A6A90B42B1A5F2200A7F1CA /* Tracker-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tracker-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A6A90B62B1A5F2200A7F1CA /* Tracker_iosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker_iosTests.swift; sourceTree = "<group>"; };
+		4A6A90C32B1A72D200A7F1CA /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		4A90AF9C2AFF964600A83B74 /* Keyboard+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard+Extensions.swift"; sourceTree = "<group>"; };
 		4AA083332AD4589000D8D18D /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
 		4AA083352AD458C300D8D18D /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -250,6 +252,22 @@
 			path = "Tracker-iosTests";
 			sourceTree = "<group>";
 		};
+		4A6A90C22B1A6C5900A7F1CA /* TabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				4AA083352AD458C300D8D18D /* TabBarController.swift */,
+			);
+			path = TabBarController;
+			sourceTree = "<group>";
+		};
+		4A6A90C52B1A762000A7F1CA /* AnalyticsService */ = {
+			isa = PBXGroup;
+			children = (
+				4A6A90C32B1A72D200A7F1CA /* AnalyticsService.swift */,
+			);
+			path = AnalyticsService;
+			sourceTree = "<group>";
+		};
 		4AA083372AD6EAC400D8D18D /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -297,6 +315,8 @@
 		4AC281D32AC967FA00D232B4 /* Tracker-ios */ = {
 			isa = PBXGroup;
 			children = (
+				4A6A90C52B1A762000A7F1CA /* AnalyticsService */,
+				4A6A90C22B1A6C5900A7F1CA /* TabBarController */,
 				4A29CF132B0E19E7009F413C /* Resources */,
 				4A29CECB2B04F7B9009F413C /* OnboardingViewController */,
 				4A05DCA82ADAB8030051E166 /* StatisticsViewController */,
@@ -306,7 +326,6 @@
 				4A05DCA52ADAB5F90051E166 /* Helpers */,
 				4A25833C2AFBBE55007EB2D7 /* TrackerCoreData */,
 				4AC281D42AC967FA00D232B4 /* AppDelegate.swift */,
-				4AA083352AD458C300D8D18D /* TabBarController.swift */,
 				4AC281D62AC967FA00D232B4 /* SceneDelegate.swift */,
 				4AC281DD2AC967FC00D232B4 /* Assets.xcassets */,
 				4AC281DF2AC967FC00D232B4 /* LaunchScreen.storyboard */,
@@ -520,6 +539,7 @@
 				4AA2F6E12AFA31A9009D1046 /* Tracker.xcdatamodeld in Sources */,
 				4AC281D92AC967FA00D232B4 /* TrackersViewController.swift in Sources */,
 				4A05DCB02ADD895D0051E166 /* ScheduleViewController.swift in Sources */,
+				4A6A90C42B1A72D200A7F1CA /* AnalyticsService.swift in Sources */,
 				4A05DCB82AE3F42D0051E166 /* ScheduleCellDelegate.swift in Sources */,
 				4AA75A702AF030B800C26CD7 /* UITextField+Extensions.swift in Sources */,
 				4A05DCAA2ADAC4B80051E166 /* CategoryViewController.swift in Sources */,

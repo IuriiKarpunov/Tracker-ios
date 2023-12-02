@@ -42,6 +42,7 @@ final class NewHabitOrEventViewController: UIViewController {
     private var category: TrackerCategory?
     private var schedule = [WeekDay]()
     private var textFieldTopAnchorConstant: Int?
+    private var trackerTitle = ""
     var trackerID: UUID?
     var daysCount: Int?
     var editCategorie: String?
@@ -282,6 +283,7 @@ final class NewHabitOrEventViewController: UIViewController {
         applyConstraints()
         
         self.hideKeyboardWhenTappedAround()
+        addButton()
     }
     
     // MARK: - IBAction
@@ -325,7 +327,7 @@ final class NewHabitOrEventViewController: UIViewController {
         
         let newTracker = Tracker(
             id: newTrackerID,
-            name: textField.text ?? NSLocalizedString("untitled", comment: "Untitled"),
+            name: trackerTitle,
             color: selectedColor ?? .ypColorSelection1,
             emoji: selectedEmoji ?? "",
             schedule: newSchedule,
@@ -510,9 +512,9 @@ final class NewHabitOrEventViewController: UIViewController {
     }
     
     private func addButton() {
-        let isHabitButton = habitOrEvent == .habit
+        let isHabitButton = habitOrEvent == .habit || habitOrEvent == .edit
         let isValidSchedule = isHabitButton ? (headerScheduleLabel.text != "") : true
-        let isValidText = textField.text != ""
+        let isValidText = trackerTitle != ""
         let isValidCategory = headerCategoryLabel.text != ""
         let isEmoji = selectedEmoji != nil
         let isColor = selectedColor != nil
@@ -528,6 +530,7 @@ final class NewHabitOrEventViewController: UIViewController {
             }
 
             textField.text = tracker.name
+            self.trackerTitle = tracker.name ?? ""
             headerCategoryLabel.text = editCategorie
 
             guard let trackerColorString = tracker.color,
@@ -647,6 +650,8 @@ extension NewHabitOrEventViewController: UITextFieldDelegate {
                 return false
             } else {
                 errorTitleLabel.text = ""
+                self.trackerTitle = updatedText
+                addButton()
                 return true
             }
         }
