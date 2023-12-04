@@ -17,14 +17,12 @@ final class FiltersCell: UITableViewCell {
         let label = UILabel()
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 17)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
     
     private lazy var propertyImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "PropertyDone.png"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isHidden = true
         
         return imageView
@@ -44,8 +42,10 @@ final class FiltersCell: UITableViewCell {
     // MARK: - Private Methods
     
     private func addSubViews() {
-        contentView.addSubview(cellLabel)
-        contentView.addSubview(propertyImageView)
+        [cellLabel, propertyImageView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview($0)
+        }
     }
     
     private func applyConstraints() {

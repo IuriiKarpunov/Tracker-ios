@@ -8,7 +8,7 @@
 
 import UIKit
 
-class StatisticsViewController: UIViewController {
+final class StatisticsViewController: UIViewController {
     
     private let trackerRecordStore = TrackerRecordStore.shared
     private var countCompleted: Int = 0
@@ -20,14 +20,12 @@ class StatisticsViewController: UIViewController {
         label.text = NSLocalizedString("statistics", comment: "Statistics")
         label.textColor = .ypBlackDay
         label.font = UIFont.boldSystemFont(ofSize: 34)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
     
     private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "NoPhotoStatistics.png"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
@@ -37,16 +35,14 @@ class StatisticsViewController: UIViewController {
         label.text = NSLocalizedString("thereIsNothingToAnalyzeYet", comment: "There is nothing to analyze yet")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
     
-    lazy var containerCompletedView: UIView = {
+    private lazy var containerCompletedView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
         view.backgroundColor = .clear
-        view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
@@ -55,7 +51,6 @@ class StatisticsViewController: UIViewController {
         let label = UILabel()
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -66,7 +61,6 @@ class StatisticsViewController: UIViewController {
         label.textAlignment = .left
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -102,6 +96,10 @@ class StatisticsViewController: UIViewController {
         view.addSubview(containerCompletedView)
         containerCompletedView.addSubview(countCompletedLabel)
         containerCompletedView.addSubview(completedTitleLabel)
+        
+        [titleLabel, placeholderImageView, placeholderTitleLabel, containerCompletedView, countCompletedLabel, completedTitleLabel].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     private func applyConstraints() {
@@ -143,14 +141,9 @@ class StatisticsViewController: UIViewController {
     }
     
     private func reloadPlaceholder() {
-        if countCompleted == 0 {
-            placeholderImageView.isHidden = false
-            placeholderTitleLabel.isHidden = false
-            containerCompletedView.isHidden = true
-        } else {
-            placeholderImageView.isHidden = true
-            placeholderTitleLabel.isHidden = true
-            containerCompletedView.isHidden = false
-        }
+        let isCompleted = countCompleted == 0
+        placeholderImageView.isHidden = !isCompleted
+        placeholderTitleLabel.isHidden = !isCompleted
+        containerCompletedView.isHidden = isCompleted
     }
 }

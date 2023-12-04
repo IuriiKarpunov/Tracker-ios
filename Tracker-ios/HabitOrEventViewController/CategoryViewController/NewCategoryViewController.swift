@@ -18,14 +18,12 @@ final class NewCategoryViewController: UIViewController {
         label.text = NSLocalizedString("newCategory", comment: "New category")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
     
     private lazy var textField: UITextField = {
         let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = NSLocalizedString("enterCategoryName", comment: "Enter category name")
         textField.addLeftPadding(16)
         textField.backgroundColor = .ypBackgroundDay
@@ -48,7 +46,6 @@ final class NewCategoryViewController: UIViewController {
             for: .touchUpInside
         )
         button.backgroundColor = .ypGrey
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -77,9 +74,10 @@ final class NewCategoryViewController: UIViewController {
     // MARK: - Private Methods
     
     private func addSubViews() {
-        view.addSubview(titleLabel)
-        view.addSubview(readyButton)
-        view.addSubview(textField)
+        [titleLabel, readyButton, textField].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
     }
     
     private func applyConstraints() {

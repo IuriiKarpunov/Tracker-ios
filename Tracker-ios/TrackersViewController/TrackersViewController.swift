@@ -28,7 +28,7 @@ final class TrackersViewController: UIViewController {
     
     private lazy var navBarItem: UIView = {
         let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
+        
         return view
     }()
     
@@ -43,7 +43,6 @@ final class TrackersViewController: UIViewController {
             for: .touchUpInside
         )
         button.tintColor = .ypBlackDay
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -54,7 +53,6 @@ final class TrackersViewController: UIViewController {
         picker.locale = Locale.current
         picker.preferredDatePickerStyle = .compact
         picker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
-        picker.translatesAutoresizingMaskIntoConstraints = false
         
         return picker
     }()
@@ -64,7 +62,6 @@ final class TrackersViewController: UIViewController {
         label.text = NSLocalizedString("trackers", comment: "Trackers")
         label.textColor = .ypBlackDay
         label.font = UIFont.boldSystemFont(ofSize: 34)
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.accessibilityIdentifier = "titleLabel"
         
         return label
@@ -78,14 +75,12 @@ final class TrackersViewController: UIViewController {
         search.autocapitalizationType = .none
         search.clearButtonMode = .whileEditing
         search.delegate = self
-        search.translatesAutoresizingMaskIntoConstraints = false
         
         return search
     }()
     
     private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "No Photo.png"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
@@ -95,7 +90,6 @@ final class TrackersViewController: UIViewController {
         label.text = NSLocalizedString("whatWillWeTrack", comment: "What will we track?")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.accessibilityIdentifier = "placeholderTitleLabel"
         
         return label
@@ -109,12 +103,11 @@ final class TrackersViewController: UIViewController {
             collectionViewLayout: layout
         )
         collectionView.register(
-            TreckersCollectionViewCell.self,
-            forCellWithReuseIdentifier: TreckersCollectionViewCell.reuseIdentifier
+            TrackersCollectionViewCell.self,
+            forCellWithReuseIdentifier: TrackersCollectionViewCell.reuseIdentifier
         )
         collectionView.backgroundColor = .clear
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 66, right: 0)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
     }()
@@ -130,7 +123,6 @@ final class TrackersViewController: UIViewController {
             for: .touchUpInside
         )
         button.backgroundColor = .ypBlue
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -216,6 +208,11 @@ final class TrackersViewController: UIViewController {
         view.addSubview(placeholderImageView)
         view.addSubview(placeholderTitleLabel)
         view.addSubview(filtersButton)
+        
+        [navBarItem, plusButton, titleLabel, datePicker, searchTextField, collectionView, placeholderImageView, placeholderTitleLabel, filtersButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
     }
     
     private func applyConstraints() {
@@ -440,9 +437,9 @@ extension TrackersViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: TreckersCollectionViewCell.reuseIdentifier,
+            withReuseIdentifier: TrackersCollectionViewCell.reuseIdentifier,
             for: indexPath
-        ) as! TreckersCollectionViewCell
+        ) as! TrackersCollectionViewCell
         
         cell.delegate = self
         
@@ -478,7 +475,7 @@ extension TrackersViewController: UICollectionViewDelegate{
         previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration
     ) -> UITargetedPreview? {
         guard let indexPath = configuration.identifier as? IndexPath,
-              let cell = collectionView.cellForItem(at: indexPath) as? TreckersCollectionViewCell
+              let cell = collectionView.cellForItem(at: indexPath) as? TrackersCollectionViewCell
         else {
             return nil
         }
@@ -623,9 +620,9 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
     }
 }
 
-// MARK: - TreckersCollectionViewCellDelegate
+// MARK: - TrackersCollectionViewCellDelegate
 
-extension TrackersViewController: TreckersCollectionViewCellDelegate {
+extension TrackersViewController: TrackersCollectionViewCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
         let trackerRecord = TrackerRecord(trackerID: id, date: datePicker.date)
         completedTrackers.append (trackerRecord)

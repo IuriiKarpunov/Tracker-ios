@@ -21,7 +21,6 @@ final class ScheduleViewController: UIViewController {
         label.text = NSLocalizedString("schedule", comment: "Schedule")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -33,7 +32,6 @@ final class ScheduleViewController: UIViewController {
         tableView.backgroundColor = .ypBackgroundDay
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         
         return tableView
     }()
@@ -51,7 +49,6 @@ final class ScheduleViewController: UIViewController {
             for: .touchUpInside
         )
         button.backgroundColor = .ypBlackDay
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -79,9 +76,10 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Private Methods
     
     private func addSubViews() {
-        view.addSubview(titleLabel)
-        view.addSubview(tableView)
-        view.addSubview(addScheduleButton)
+        [titleLabel, tableView, addScheduleButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
     }
     
     private func applyConstraints() {

@@ -36,7 +36,6 @@ class OnboardingViewController: UIPageViewController {
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         label.numberOfLines = 2
         label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -51,7 +50,6 @@ class OnboardingViewController: UIPageViewController {
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         label.numberOfLines = 2
         label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -71,7 +69,6 @@ class OnboardingViewController: UIPageViewController {
             for: .touchUpInside
         )
         button.backgroundColor = .ypBlackDay
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -82,7 +79,6 @@ class OnboardingViewController: UIPageViewController {
         pageControl.currentPage = 0
         pageControl.currentPageIndicatorTintColor = .ypBlackDay
         pageControl.pageIndicatorTintColor = .ypGrey
-        pageControl.translatesAutoresizingMaskIntoConstraints = false
         
         return pageControl
     }()
@@ -127,6 +123,10 @@ class OnboardingViewController: UIPageViewController {
         redViewController.view.addSubview(redLabel)
         view.addSubview(pageControl)
         view.addSubview(button)
+        
+        [blueLabel, redLabel, pageControl, button].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     private func applyConstraints() {

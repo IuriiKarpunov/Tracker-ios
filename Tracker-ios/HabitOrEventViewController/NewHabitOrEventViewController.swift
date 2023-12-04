@@ -75,7 +75,6 @@ final class NewHabitOrEventViewController: UIViewController {
         let label = UILabel()
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -84,7 +83,6 @@ final class NewHabitOrEventViewController: UIViewController {
         let label = UILabel()
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -93,14 +91,12 @@ final class NewHabitOrEventViewController: UIViewController {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = true
         scrollView.alwaysBounceVertical = true
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
         
         return scrollView
     }()
     
     private lazy var textField: UITextField = {
         let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = NSLocalizedString("enterTrackerName", comment: "Enter tracker name")
         textField.addLeftPadding(16)
         textField.backgroundColor = .ypBackgroundDay
@@ -112,14 +108,12 @@ final class NewHabitOrEventViewController: UIViewController {
     
     private lazy var categoryImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "Chevron.png"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
     
     private lazy var scheduleImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "Chevron.png"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
@@ -140,7 +134,6 @@ final class NewHabitOrEventViewController: UIViewController {
             action: #selector(didTapCategoryButton),
             for: .touchUpInside
         )
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -150,7 +143,6 @@ final class NewHabitOrEventViewController: UIViewController {
         label.text = ""
         label.textColor = .ypGrey
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -172,7 +164,6 @@ final class NewHabitOrEventViewController: UIViewController {
             action: #selector(didTapScheduleButton),
             for: .touchUpInside
         )
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -182,7 +173,6 @@ final class NewHabitOrEventViewController: UIViewController {
         label.text = ""
         label.textColor = .ypGrey
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -194,7 +184,6 @@ final class NewHabitOrEventViewController: UIViewController {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: EmojiAndColorHeaderView.reuseIdentifier
         )
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
     }()
@@ -206,7 +195,6 @@ final class NewHabitOrEventViewController: UIViewController {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: EmojiAndColorHeaderView.reuseIdentifier
         )
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
     }()
@@ -226,7 +214,6 @@ final class NewHabitOrEventViewController: UIViewController {
             action: #selector(didTapCancelButton),
             for: .touchUpInside
         )
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -244,7 +231,6 @@ final class NewHabitOrEventViewController: UIViewController {
             for: .touchUpInside
         )
         button.backgroundColor = .ypGrey
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -252,7 +238,7 @@ final class NewHabitOrEventViewController: UIViewController {
     private lazy var delimiterView: UIView = {
         let delimiterView = UIView()
         delimiterView.backgroundColor = .ypGrey
-        delimiterView.translatesAutoresizingMaskIntoConstraints = false
+        
         return delimiterView
     }()
     
@@ -260,7 +246,6 @@ final class NewHabitOrEventViewController: UIViewController {
         let label = UILabel()
         label.textColor = .ypRed
         label.font = UIFont.systemFont(ofSize: 17)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -334,7 +319,7 @@ final class NewHabitOrEventViewController: UIViewController {
             isPinned: false
         )
         delegate?.createTrackersHabit(tracker: newTracker, categoryName: categoryName)
-
+        
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid Configuration")
             return
@@ -363,6 +348,10 @@ final class NewHabitOrEventViewController: UIViewController {
             scheduleButton.addSubview(scheduleImageView)
             scheduleButton.addSubview(headerScheduleLabel)
             scheduleButton.addSubview(delimiterView)
+        }
+        
+        [newHabitTitleLabel, scrollView, daysCountLabel, textField, errorTitleLabel, categoryButton, categoryImageView, headerCategoryLabel, emojiCollectionView, colorCollectionView, cancelButton, createButton, scheduleButton, scheduleImageView, headerScheduleLabel, delimiterView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
         }
     }
     
@@ -528,28 +517,28 @@ final class NewHabitOrEventViewController: UIViewController {
             guard let tracker = try trackerStore.fetchTrackerCoreData(withID: trackerID) else {
                 fatalError("Трекер с ID \(String(describing: trackerID)) не найден")
             }
-
+            
             textField.text = tracker.name
             self.trackerTitle = tracker.name ?? ""
             headerCategoryLabel.text = editCategorie
-
+            
             guard let trackerColorString = tracker.color,
                   let trackerColor = UIColor(hexStringRepresentation: trackerColorString) else {
                 fatalError("Ошибка при получении данных о цвете трекера")
             }
-
+            
             selectedColor = trackerColor
             if let index = color.firstIndex(where: { $0.hexString == selectedColor?.hexString }) {
                 selectedColorIndex = index
             }
-
+            
             selectedEmoji = tracker.emoji
             selectedEmojiIndex = emoji.firstIndex(of: selectedEmoji ?? "")
-
+            
             if let scheduleString = tracker.schedule as? String {
                 let scheduleComponents = scheduleString.components(separatedBy: ",")
                 self.schedule = scheduleComponents.compactMap { WeekDay(rawValue: $0) }
-
+                
                 let shortSchedule = schedule.map { $0.shortName }.joined(separator: ", ")
                 headerScheduleLabel.text = shortSchedule
             }

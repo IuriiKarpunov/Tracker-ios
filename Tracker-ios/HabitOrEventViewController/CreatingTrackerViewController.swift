@@ -19,7 +19,6 @@ final class CreatingTrackerViewController: UIViewController {
         label.text = NSLocalizedString("creatingATracker", comment: "Creating a tracker")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.accessibilityIdentifier = "creatingTitleLabel"
         
         return label
@@ -38,7 +37,6 @@ final class CreatingTrackerViewController: UIViewController {
             for: .touchUpInside
         )
         button.backgroundColor = .ypBlackDay
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -56,7 +54,6 @@ final class CreatingTrackerViewController: UIViewController {
             for: .touchUpInside
         )
         button.backgroundColor = .ypBlackDay
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -89,9 +86,10 @@ final class CreatingTrackerViewController: UIViewController {
     // MARK: - Private Methods
     
     private func addSubViews() {
-        view.addSubview(creatingTitleLabel)
-        view.addSubview(habitButton)
-        view.addSubview(eventButton)
+        [creatingTitleLabel, habitButton, eventButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
     }
     
     private func applyConstraints() {

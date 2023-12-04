@@ -1,5 +1,5 @@
 //
-//  TreckersCollectionViewCell.swift
+//  TrackersCollectionViewCell.swift
 //  Tracker-ios
 //
 //  Created by Iurii on 23.10.23.
@@ -7,19 +7,19 @@
 
 import UIKit
 
-final class TreckersCollectionViewCell: UICollectionViewCell {
+final class TrackersCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Stored Properties
     
     
-    static let reuseIdentifier = "TreckersCollectionViewCell"
+    static let reuseIdentifier = "TrackersCollectionViewCell"
     private let analyticsService = AnalyticsService()
     
     private var isCompletedToday: Bool = false
     private var trackerID: UUID?
     private var indexPath: IndexPath?
     private var selectedDate: Date?
-    weak var delegate: TreckersCollectionViewCellDelegate?
+    weak var delegate: TrackersCollectionViewCellDelegate?
     
     //MARK: - Layout variables
     
@@ -29,7 +29,6 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .left
         label.numberOfLines = 2
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -41,16 +40,14 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         label.backgroundColor = .ypWhiteDay.withAlphaComponent(0.3)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
     
-     lazy var colorView: UIView = {
+    lazy var colorView: UIView = {
         let colorView = UIView()
         colorView.layer.cornerRadius = 16
-        colorView.translatesAutoresizingMaskIntoConstraints = false
-         
+        
         return colorView
     }()
     
@@ -58,7 +55,6 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "0 дней"
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -72,14 +68,12 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
             for: .touchUpInside
         )
         button.tintColor = .ypWhiteDay
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
     
     private lazy var pinnedImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "Pinned.png"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isHidden = false
         
         return imageView
@@ -99,7 +93,14 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Public Methods
     
-    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, daysCount: Int, selectedDate: Date, isPinned: Bool) {
+    func configure(
+        with tracker: Tracker,
+        isCompletedToday: Bool,
+        indexPath: IndexPath,
+        daysCount: Int,
+        selectedDate: Date,
+        isPinned: Bool
+    ) {
         nameLabel.text = tracker.name
         emojiLabel.text = tracker.emoji
         colorView.backgroundColor = tracker.color
@@ -148,6 +149,10 @@ final class TreckersCollectionViewCell: UICollectionViewCell {
         colorView.addSubview(pinnedImageView)
         contentView.addSubview(daysLabel)
         contentView.addSubview(executeButton)
+        
+        [colorView, emojiLabel, nameLabel, pinnedImageView, daysLabel, executeButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     private func applyConstraints() {

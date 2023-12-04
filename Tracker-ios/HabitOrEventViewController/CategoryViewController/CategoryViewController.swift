@@ -24,14 +24,12 @@ final class CategoryViewController: UIViewController {
         label.text = NSLocalizedString("category", comment: "Category")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
     
     private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "No Photo.png"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
@@ -43,7 +41,6 @@ final class CategoryViewController: UIViewController {
         label.textAlignment = .center
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -55,7 +52,6 @@ final class CategoryViewController: UIViewController {
         tableView.backgroundColor = .ypBackgroundDay
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         
         return tableView
     }()
@@ -73,7 +69,6 @@ final class CategoryViewController: UIViewController {
             for: .touchUpInside
         )
         button.backgroundColor = .ypBlackDay
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -112,11 +107,10 @@ final class CategoryViewController: UIViewController {
     }
     
     private func addSubViews() {
-        view.addSubview(titleLabel)
-        view.addSubview(tableView)
-        view.addSubview(placeholderImageView)
-        view.addSubview(placeholderTitleLabel)
-        view.addSubview(addCategoryButton)
+        [titleLabel, tableView, placeholderImageView, placeholderTitleLabel, addCategoryButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
     }
     
     private func turnOnViews() {
@@ -212,15 +206,12 @@ extension CategoryViewController: UITableViewDelegate {
 
 extension CategoryViewController: NewCategoryViewControllerDelegate {
     func addNewCategories(category: TrackerCategory) {
-        if !categoryViewModel.categoryExists(with: category.title) {
-            categoryViewModel.addCategory(category)
-            categories = categoryViewModel.categories
-            tableView.reloadData()
-            turnOnViews()
-            
-            tableViewHeightConstraint?.constant = calculateTableViewHeight()
-        } else {
-            print("Category with title '\(category.title)' already exists.")
-        }
+        guard !categoryViewModel.categoryExists(with: category.title) else { return }
+        categoryViewModel.addCategory(category)
+        categories = categoryViewModel.categories
+        tableView.reloadData()
+        turnOnViews()
+        
+        tableViewHeightConstraint?.constant = calculateTableViewHeight()
     }
 }

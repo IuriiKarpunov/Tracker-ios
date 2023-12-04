@@ -23,7 +23,6 @@ final class FiltersViewController: UIViewController {
         label.text = NSLocalizedString("filters", comment: "Filters")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -35,7 +34,6 @@ final class FiltersViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.isScrollEnabled = false
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         
         return tableView
     }()
@@ -46,7 +44,7 @@ final class FiltersViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .ypWhiteDay
         tableView.register(FiltersCell.self, forCellReuseIdentifier: FiltersCell.reuseIdentifier)
-
+        
         addSubViews()
         applyConstraints()
     }
@@ -54,8 +52,10 @@ final class FiltersViewController: UIViewController {
     // MARK: - Private Methods
     
     private func addSubViews() {
-        view.addSubview(titleLabel)
-        view.addSubview(tableView)
+        [titleLabel, tableView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
     }
     
     private func applyConstraints() {
@@ -67,7 +67,7 @@ final class FiltersViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
-            ])
+        ])
     }
 }
 
@@ -100,7 +100,7 @@ extension FiltersViewController: UITableViewDataSource {
 }
 
 //MARK: - UITableViewDelegate
-            
+
 extension FiltersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         delegate?.filtersViewController(self, didSelectFilter: Filters.allCases[indexPath.row])
