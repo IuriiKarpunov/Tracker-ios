@@ -22,7 +22,6 @@ final class ScheduleCell: UITableViewCell {
         let label = UILabel()
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 17)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -32,17 +31,17 @@ final class ScheduleCell: UITableViewCell {
         switcher.setOn(false, animated: true)
         switcher.onTintColor = .ypBlue
         switcher.addTarget(self, action: #selector(switchChanged(sender:)), for: .valueChanged)
-        switcher.translatesAutoresizingMaskIntoConstraints = false
         
         return switcher
     }()
     
     // MARK: - Lifecycle
     
-    func configureCell(weekDay: WeekDay) {
+    func configureCell(weekDay: WeekDay, isSelected: Bool) {
         currentWeekDay = weekDay
-        cellLabel.text = weekDay.rawValue
+        cellLabel.text = weekDay.fullName
         contentView.backgroundColor = .ypBackgroundDay
+        switcherView.isOn = isSelected
         addSubViews()
         applyConstraints()
     }
@@ -51,8 +50,10 @@ final class ScheduleCell: UITableViewCell {
     // MARK: - Private Methods
     
     private func addSubViews() {
-        contentView.addSubview(cellLabel)
-        contentView.addSubview(switcherView)
+        [cellLabel, switcherView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview($0)
+        }
     }
     
     private func applyConstraints() {

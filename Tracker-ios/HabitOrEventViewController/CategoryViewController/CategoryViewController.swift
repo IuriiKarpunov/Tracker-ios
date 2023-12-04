@@ -10,7 +10,7 @@ import UIKit
 final class CategoryViewController: UIViewController {
     
     // MARK: - Stored properties
-    
+    var selectedCategoryName: String?
     weak var delegate: CategoryViewControllerDelegate?
     private var trackerCategoryStore = TrackerCategoryStore.shared
     private var categories: [TrackerCategory] = []
@@ -21,29 +21,26 @@ final class CategoryViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Категория"
+        label.text = NSLocalizedString("category", comment: "Category")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
     
     private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "No Photo.png"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
     
     private lazy var placeholderTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Привычки и события можно\nобъединить по смыслу"
+        label.text = NSLocalizedString("habitsAndEvents", comment: "Habits and events can be combined by meaning")
         label.numberOfLines = 2
         label.textAlignment = .center
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -55,14 +52,13 @@ final class CategoryViewController: UIViewController {
         tableView.backgroundColor = .ypBackgroundDay
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         
         return tableView
     }()
     
     private lazy var addCategoryButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(NSLocalizedString("addCategory", comment: "Add category"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhiteDay, for: .normal)
         button.accessibilityIdentifier = "addCategoryButton"
@@ -73,7 +69,6 @@ final class CategoryViewController: UIViewController {
             for: .touchUpInside
         )
         button.backgroundColor = .ypBlackDay
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -112,11 +107,10 @@ final class CategoryViewController: UIViewController {
     }
     
     private func addSubViews() {
-        view.addSubview(titleLabel)
-        view.addSubview(tableView)
-        view.addSubview(placeholderImageView)
-        view.addSubview(placeholderTitleLabel)
-        view.addSubview(addCategoryButton)
+        [titleLabel, tableView, placeholderImageView, placeholderTitleLabel, addCategoryButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
     }
     
     private func turnOnViews() {
@@ -134,12 +128,13 @@ final class CategoryViewController: UIViewController {
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 22),
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 21),
             
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.bottomAnchor.constraint(lessThanOrEqualTo: addCategoryButton.topAnchor,constant: -47),
+            tableView.bottomAnchor.constraint(lessThanOrEqualTo: addCategoryButton.topAnchor, constant: -47),
             
             placeholderImageView.heightAnchor.constraint(equalToConstant: 80),
             placeholderImageView.widthAnchor.constraint(equalToConstant: 80),
@@ -180,13 +175,15 @@ extension CategoryViewController: UITableViewDataSource {
         }
         
         let category = categoryViewModel.category(at: indexPath.row)
-        categoryCell.configureCell(category: category)
+        let isSelected = category == selectedCategoryName
+        categoryCell.configureCell(category: category, isSelected: isSelected)
         
         return categoryCell
     }
 }
 
 //MARK: - UITableViewDelegate
+
 extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else {
@@ -209,6 +206,7 @@ extension CategoryViewController: UITableViewDelegate {
 
 extension CategoryViewController: NewCategoryViewControllerDelegate {
     func addNewCategories(category: TrackerCategory) {
+        guard !categoryViewModel.categoryExists(with: category.title) else { return }
         categoryViewModel.addCategory(category)
         categories = categoryViewModel.categories
         tableView.reloadData()

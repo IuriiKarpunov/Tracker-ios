@@ -8,5 +8,5 @@
 import UIKit
 
 protocol NewHabitOrEventViewControllerDelegate: AnyObject {
-    func createTrackers(tracker: Tracker, categoryName: String)
+    func createTrackersHabit(tracker: Tracker, categoryName: String)
 }

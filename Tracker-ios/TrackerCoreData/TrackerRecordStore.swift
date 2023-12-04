@@ -85,11 +85,43 @@ final class TrackerRecordStore: NSObject {
         }
     }
     
+    func deleteTrackerRecordAll(withID trackerID: UUID) throws {
+        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        fetchRequest.predicate = NSPredicate(
+            format: " %K == %@",
+            #keyPath(TrackerRecordCoreData.trackerID),
+            trackerID as CVarArg
+        )
+
+        do {
+            let trackerRecords = try context.fetch(fetchRequest)
+
+            for deletingRecord in trackerRecords {
+                context.delete(deletingRecord)
+            }
+
+            try context.save()
+        } catch {
+            throw error
+        }
+    }
+    
     func fetchTrackersRecord() throws -> [TrackerRecord] {
         let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
         let trackerRecordFromCoreData = try context.fetch(fetchRequest)
         
         return try trackerRecordFromCoreData.map { try self.trackerRecord(from: $0) }
+    }
+    
+    func countCompletedTrackers() throws -> Int {
+        do {
+            let trackerRecords = try fetchTrackersRecord()
+            let currentDate = Date()
+            let completedTrackersCount = trackerRecords.filter { $0.date <= currentDate }.count
+            return completedTrackersCount
+        } catch {
+            throw error
+        }
     }
     
     //MARK: - Private Methods

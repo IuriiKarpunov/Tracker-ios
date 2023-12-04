@@ -9,15 +9,12 @@ import UIKit
 
 extension UIColor {
     static var ypBackgroundDay: UIColor! { UIColor(named: "Background [day]")}
-    static var ypBackgroundNight: UIColor! { UIColor(named: "Background [night]")}
     static var ypBlackDay: UIColor! { UIColor(named: "Black [day]")}
-    static var ypBlackNight: UIColor! { UIColor(named: "Black [night]")}
     static var ypBlue: UIColor! { UIColor(named: "Blue")}
     static var ypGrey: UIColor! { UIColor(named: "Grey")}
     static var ypLightGray: UIColor! { UIColor(named: "Light Gray")}
     static var ypRed: UIColor! { UIColor(named: "Red")}
     static var ypWhiteDay: UIColor! { UIColor(named: "White [day]")}
-    static var ypWhiteNight: UIColor! { UIColor(named: "White [night]")}
     
     static var ypColorSelection1: UIColor! { UIColor(named: "Color selection 1")}
     static var ypColorSelection2: UIColor! { UIColor(named: "Color selection 2")}
@@ -50,5 +47,22 @@ extension UIColor {
             lroundf(Float(g * 255)),
             lroundf(Float(b * 255))
         )
+    }
+    
+    convenience init?(hexStringRepresentation: String) {
+        var hexSanitized = hexStringRepresentation.trimmingCharacters(in: .whitespacesAndNewlines)
+        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
+        
+        var rgb: UInt64 = 0
+        
+        guard Scanner(string: hexSanitized).scanHexInt64(&rgb) else {
+            return nil
+        }
+        
+        let red = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
+        let green = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
+        let blue = CGFloat(rgb & 0x0000FF) / 255.0
+        
+        self.init(red: red, green: green, blue: blue, alpha: 1.0)
     }
 }

@@ -96,6 +96,7 @@ final class TrackerCategoryStore: NSObject {
             trackerCoreData.name = tracker.name
             trackerCoreData.color = tracker.color.hexString
             trackerCoreData.emoji = tracker.emoji
+            trackerCoreData.isPinned = tracker.isPinned
             trackerCoreData.schedule = tracker.schedule.compactMap { $0.rawValue }.joined(separator: ",") as NSObject
             
             trackerCategoryCoreData.addToTrackers(trackerCoreData)
@@ -113,15 +114,30 @@ final class TrackerCategoryStore: NSObject {
         trackerCoreData.name = tracker.name
         trackerCoreData.color = tracker.color.hexString
         trackerCoreData.emoji = tracker.emoji
+        trackerCoreData.isPinned = tracker.isPinned
         trackerCoreData.schedule = tracker.schedule.compactMap { $0.rawValue }.joined(separator: ",") as NSObject
         
         category?.addToTrackers(trackerCoreData)
         try context.save()
     }
     
+    func updateCategories() {
+        do {
+            try fetchedResultsController?.performFetch()
+            delegate?.store(self, didUpdate: TrackerCategoryStoreUpdate(
+                insertedIndexes: IndexSet(),
+                deletedIndexes: IndexSet(),
+                updatedIndexes: IndexSet(),
+                movedIndexes: Set<TrackerCategoryStoreUpdate.Move>()
+            ))
+        } catch {
+            print("Error updating categories from CoreData: \(error.localizedDescription)")
+        }
+    }
+    
     //MARK: - Private Methods
     
-    func trackerCategory(from trackerCategoryCorData: TrackerCategoryCoreData) throws -> TrackerCategory {
+    private func trackerCategory(from trackerCategoryCorData: TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let title = trackerCategoryCorData.title,
               let trackerCoreDataArray = trackerCategoryCorData.trackers?.allObjects as? [TrackerCoreData] else {
             throw TrackerCategoryStoreError.missingRequiredFields

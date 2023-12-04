@@ -13,15 +13,14 @@ final class ScheduleViewController: UIViewController {
     
     private var schedule = [WeekDay]()
     weak var delegate: ScheduleViewControllerDelegate?
-    
+    var selectedSchedule = [WeekDay]()
     //MARK: - Layout variables
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Расписание"
+        label.text = NSLocalizedString("schedule", comment: "Schedule")
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -30,16 +29,16 @@ final class ScheduleViewController: UIViewController {
         let tableView = UITableView()
         tableView.rowHeight = 75
         tableView.layer.cornerRadius = 16
+        tableView.backgroundColor = .ypBackgroundDay
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         
         return tableView
     }()
     
     private lazy var addScheduleButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("ready", comment: "Ready"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(.ypWhiteDay, for: .normal)
         button.accessibilityIdentifier = "addScheduleButton"
@@ -50,7 +49,6 @@ final class ScheduleViewController: UIViewController {
             for: .touchUpInside
         )
         button.backgroundColor = .ypBlackDay
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -63,6 +61,7 @@ final class ScheduleViewController: UIViewController {
         tableView.register(ScheduleCell.self, forCellReuseIdentifier: ScheduleCell.reuseIdentifier)
         addSubViews()
         applyConstraints()
+        schedule = selectedSchedule
     }
     
     // MARK: - IBAction
@@ -77,14 +76,16 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Private Methods
     
     private func addSubViews() {
-        view.addSubview(titleLabel)
-        view.addSubview(tableView)
-        view.addSubview(addScheduleButton)
+        [titleLabel, tableView, addScheduleButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
     }
     
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 22),
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 21),
             
             tableView.heightAnchor.constraint(equalToConstant: CGFloat(WeekDay.allCases.count * 75)),
@@ -127,8 +128,8 @@ extension ScheduleViewController: UITableViewDelegate {
 
 extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return WeekDay.allCases.count
-        }
+        return WeekDay.allCases.count
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ScheduleCell.reuseIdentifier, for: indexPath)
@@ -143,7 +144,9 @@ extension ScheduleViewController: UITableViewDataSource {
         if indexPath.row == WeekDay.allCases.count - 1 {
             scheduleCell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
         }
-        scheduleCell.configureCell(weekDay: WeekDay.allCases[indexPath.row])
+        let currentWeekDay = WeekDay.allCases[indexPath.row]
+        let isSelected = selectedSchedule.contains(currentWeekDay)
+        scheduleCell.configureCell(weekDay: currentWeekDay, isSelected: isSelected)
         
         return scheduleCell
     }

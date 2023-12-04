@@ -14,34 +14,53 @@ struct Tracker {
     let color: UIColor
     let emoji: String
     let schedule: [WeekDay]
+    let isPinned: Bool
 }
 
 enum WeekDay: String, CaseIterable, Codable  {
-    case monday = "Понедельник"
-    case tuesday = "Вторник"
-    case wednesday = "Среда"
-    case thursday = "Четверг"
-    case friday = "Пятница"
-    case saturday = "Суббота"
-    case sunday = "Воскресенье"
+    case monday = "monday"
+    case tuesday = "tuesday"
+    case wednesday = "wednesday"
+    case thursday = "thursday"
+    case friday = "friday"
+    case saturday = "saturday"
+    case sunday = "sunday"
+    
+    var fullName: String {
+        switch self {
+        case .monday:
+            return NSLocalizedString("mondayFull", comment: "")
+        case .tuesday:
+            return NSLocalizedString("tuesdayFull", comment: "")
+        case .wednesday:
+            return NSLocalizedString("wednesdayFull", comment: "")
+        case .thursday:
+            return NSLocalizedString("thursdayFull", comment: "")
+        case .friday:
+            return NSLocalizedString("fridayFull", comment: "")
+        case .saturday:
+            return NSLocalizedString("saturdayFull", comment: "")
+        case .sunday:
+            return NSLocalizedString("sundayFull", comment: "")
+        }
+    }
     
     var shortName: String {
         switch self {
-            
         case .monday:
-            return "Пн"
+            return NSLocalizedString("mondayShort", comment: "")
         case .tuesday:
-            return "Вт"
+            return NSLocalizedString("tuesdayShort", comment: "")
         case .wednesday:
-            return "Ср"
+            return NSLocalizedString("wednesdayShort", comment: "")
         case .thursday:
-            return "Чт"
+            return NSLocalizedString("thursdayShort", comment: "")
         case .friday:
-            return "Пт"
+            return NSLocalizedString("fridayShort", comment: "")
         case .saturday:
-            return "Сб"
+            return NSLocalizedString("saturdayShort", comment: "")
         case .sunday:
-            return "Вс"
+            return NSLocalizedString("sundayShort", comment: "")
         }
     }
     

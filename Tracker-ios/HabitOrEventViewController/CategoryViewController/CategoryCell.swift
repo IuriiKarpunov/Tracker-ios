@@ -13,20 +13,24 @@ final class CategoryCell: UITableViewCell {
     
     static let reuseIdentifier = "CategoryCell"
     
+    var isSelectedCategory: Bool = false {
+        didSet {
+            propertyImageView.isHidden = !isSelectedCategory
+        }
+    }
+    
     //MARK: - Layout variables
     
     private lazy var cellLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypBlackDay
         label.font = UIFont.systemFont(ofSize: 17)
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
     
     private lazy var propertyImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "PropertyDone.png"))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isHidden = true
         
         return imageView
@@ -34,9 +38,10 @@ final class CategoryCell: UITableViewCell {
     
     // MARK: - Lifecycle
     
-    func configureCell(category: String) {
+    func configureCell(category: String, isSelected: Bool) {
         cellLabel.text = category
         contentView.backgroundColor = .ypBackgroundDay
+        isSelectedCategory = isSelected
         addSubViews()
         applyConstraints()
     }
@@ -44,12 +49,10 @@ final class CategoryCell: UITableViewCell {
     // MARK: - Private Methods
     
     private func addSubViews() {
-        contentView.addSubview(cellLabel)
-        contentView.addSubview(propertyImageView)
-    }
-    
-    func togglePropertyImageViewVisibility() {
-        propertyImageView.isHidden = !propertyImageView.isHidden
+        [cellLabel, propertyImageView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview($0)
+        }
     }
     
     private func applyConstraints() {
@@ -62,5 +65,9 @@ final class CategoryCell: UITableViewCell {
             propertyImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             propertyImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
         ])
+    }
+    
+    func togglePropertyImageViewVisibility() {
+        propertyImageView.isHidden = !propertyImageView.isHidden
     }
 }
